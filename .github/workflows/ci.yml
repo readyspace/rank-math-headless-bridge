@@ -6,13 +6,15 @@ permissions:
   contents: read
 jobs:
   php:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         php: ['7.4', '8.1', '8.3', '8.4']
     container: php:${{ matrix.php }}-cli
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Check DOM extension
         run: php -r 'if (!class_exists("DOMDocument")) { fwrite(STDERR, "DOM is required\n"); exit(1); }'
       - name: PHP syntax
@@ -22,7 +24,9 @@ jobs:
       - name: Metadata and IndexNow
         run: php tests/metadata-test.php
   frontend-example:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run: node --test tests/frontend-example.test.mjs
