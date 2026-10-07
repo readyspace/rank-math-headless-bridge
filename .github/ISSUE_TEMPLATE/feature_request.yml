@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest an improvement for headless WordPress sites.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Explain the user's workflow and current limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Include how it would be configured and how existing behavior should be preserved.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and compatibility considerations
+      description: Mention frameworks, permalink layouts, languages, multisite, privacy, or authentication requirements if relevant.

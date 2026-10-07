@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a reproducible problem without sharing private site data.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use generic domains and remove credentials and personal data. For vulnerabilities, follow SECURITY.md and report privately.
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Plugin, WordPress, PHP, Rank Math, and frontend framework versions.
+    validations:
+      required: true
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Enabled modules and relevant configuration
+      description: Explain the permalink layout and frontend deployment. Use cms.example.com and www.example.com, not private configuration or real keys.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: A minimal example that another contributor can reproduce in a disposable installation.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs or response examples
+      description: Remove tokens, cookies, passwords, private post content, and customer information before posting.

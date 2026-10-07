@@ -1,0 +1,9 @@
+.DS_Store
+vendor/
+node_modules/
+dist/
+*.zip
+.env
+.env.*
+!.env.example
+coverage/

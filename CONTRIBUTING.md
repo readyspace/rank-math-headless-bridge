@@ -1,0 +1,50 @@
+# Contributing
+
+Run `php tests/run.php`, `php tests/metadata-test.php` (DOM required), and
+`node --test tests/frontend-example.test.mjs` before proposing a change.
+Build an installable ZIP with `python3 scripts/package.py`.
+
+Thank you for helping make headless WordPress SEO easier to configure and maintain. This project is an independent integration with Rank Math, not a Rank Math product.
+
+## Start here
+
+- Open an issue describing the problem, the expected behavior, and a reproducible example using generic domains.
+- For a large change, discuss the approach before writing it. Small bug fixes and documentation corrections can go directly to a pull request.
+- Look for `good first issue` or `help wanted` labels. Compatibility fixtures, frontend examples, and clearer setup instructions are useful contributions.
+- Treat other contributors respectfully. Discuss the work, avoid personal attacks, and help people with different experience levels participate.
+
+## Development
+
+Clone the repository into a local WordPress development environment. Use the folder name `rank-math-headless-bridge`. Install Rank Math separately; this repository does not bundle its code.
+
+The initial compatibility target is WordPress 6.5 or newer and PHP 7.4 or newer. Run the checks documented in the repository's CI workflow before opening a pull request. For a change to a WordPress hook, add a focused test of its observable behavior and test it in a disposable WordPress installation. Pure unit tests do not establish full Rank Math compatibility.
+
+Use generic example domains such as `cms.example.com` and `www.example.com`. Do not commit production configuration, authentication cookies, application passwords, private keys, customer content, or a real site's IndexNow key. Do not import third-party plugin source without confirming that the license permits it and preserving required attribution.
+
+## Design rules
+
+- Keep features optional and disabled until the administrator configures them.
+- Preserve authenticated preview flows; published editor links and preview authentication have different requirements.
+- Restrict URL mapping to the configured CMS and frontend origins. Preserve media addresses and unrelated external links.
+- Do not turn an endpoint into a proxy for arbitrary URLs or expose drafts, private posts, or password-protected posts.
+- Check capabilities and nonces on administrative writes, sanitize configuration, and escape output.
+- Preserve Rank Math's ownership of metadata and IndexNow submission logic. Prefer its documented interfaces; isolate and document version-sensitive integrations.
+- Avoid global behavior changes unrelated to the enabled module. In particular, CMS noindex and mail suppression must remain explicit choices.
+
+## Pull requests
+
+Explain the problem and the resulting behavior. Include the affected WordPress, PHP, Rank Math, and frontend versions, the checks you ran, and any remaining limitation. Update the documentation and changelog when a user's setup or behavior changes.
+
+All contributed code is licensed under GPL-3.0-or-later. By submitting a contribution, you confirm that you can license it on those terms. The maintainers review and merge pull requests; no automatic release or production deployment is implied.
+
+CI for pull requests must work without production credentials. Forked pull requests must not receive deployment secrets. Keep workflow permissions minimal and do not run untrusted pull-request code in a privileged `pull_request_target` job.
+
+## Useful next contributions
+
+- Real WordPress and Rank Math compatibility tests across supported versions.
+- Frontend adapters for additional frameworks and permalink layouts.
+- Authenticated preview integrations with clear threat models.
+- Multilingual and multisite behavior, with explicit per-site configuration.
+- Staging migration reports that compare old and new metadata without changing live settings.
+
+For vulnerability reports, follow [SECURITY.md](SECURITY.md) instead of posting exploit details in a public issue.
