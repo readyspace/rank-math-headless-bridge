@@ -35,11 +35,19 @@ final class Metadata {
 
 	/** Accept a trusted ID, never an arbitrary URL or a preview request. */
 	public static function get_head( $request ) {
-		if ( ! Settings::enabled( 'metadata' ) || ! UrlMapper::is_configured() || ! RankMath::available() || ! function_exists( 'rest_do_request' ) || ! class_exists( '\DOMDocument' ) ) {
+		if ( ! Settings::enabled( 'metadata' ) ) {
+			return self::error( 'bridge_unavailable', 'The REST metadata module is disabled.', 503 );
+		}
+		$data = self::for_post( $request->get_param( 'post_id' ) );
+		return is_wp_error( $data ) ? $data : rest_ensure_response( $data );
+	}
+
+	/** Shared provider for REST and GraphQL. Returns normalized data or WP_Error. */
+	public static function for_post( $id ) {
+		if ( ( ! Settings::enabled( 'metadata' ) && ! Settings::enabled( 'graphql' ) ) || ! UrlMapper::is_configured() || ! RankMath::available() || ! function_exists( 'rest_do_request' ) || ! class_exists( '\DOMDocument' ) ) {
 			return self::error( 'bridge_unavailable', 'Metadata requires a configured frontend, Rank Math headless support, and the PHP DOM extension.', 503 );
 		}
-		$id = $request->get_param( 'post_id' );
-		if ( ! is_int( $id ) && ( ! is_string( $id ) || ! ctype_digit( $id ) ) ) {
+		if ( ( ! is_int( $id ) && ( ! is_string( $id ) || ! ctype_digit( $id ) ) ) || (int) $id < 1 ) {
 			return self::error( 'bridge_invalid_post', 'A positive integer post_id is required.', 400 );
 		}
 		$post = get_post( (int) $id );
@@ -70,7 +78,7 @@ final class Metadata {
 		if ( is_wp_error( $head ) ) {
 			return $head;
 		}
-		return rest_ensure_response( [ 'postId' => (int) $post->ID ] + $head );
+		return [ 'postId' => (int) $post->ID ] + $head;
 	}
 
 	public static function is_public_post( $post ): bool {
@@ -90,15 +98,13 @@ final class Metadata {
 	private static function native_head( $request, int $expected_post_id ) {
 		$names = [ 'wp', 'wp_query', 'wp_the_query', 'post', 'wp_rewrite', 'wp_actions', 'wp_filters', 'wp_current_filter', 'query_string', 'posts', 'request', 'more', 'single', 'authordata', 'currentday', 'currentmonth', 'pages', 'page', 'numpages', 'multipage' ];
 		$saved = [];
+		$clones = new \SplObjectStorage();
 		foreach ( $names as $name ) {
 			$exists         = array_key_exists( $name, $GLOBALS );
 			$value          = $exists ? $GLOBALS[ $name ] : null;
-			$saved[ $name ] = [ $exists, is_object( $value ) ? clone $value : $value ];
+			$saved[ $name ] = [ $exists, $value ];
 		}
-		$hooks = [];
-		foreach ( $GLOBALS['wp_filter'] ?? [] as $name => $hook ) {
-			$hooks[ $name ] = is_object( $hook ) ? clone $hook : $hook;
-		}
+		$hooks = $GLOBALS['wp_filter'] ?? [];
 		$server_values = [];
 		foreach ( [ 'REQUEST_URI', 'PATH_INFO', 'QUERY_STRING' ] as $name ) {
 			$server_values[ $name ] = [ array_key_exists( $name, $_SERVER ), $_SERVER[ $name ] ?? null ];
@@ -109,7 +115,27 @@ final class Metadata {
 		$public     = static function () { return 1; };
 		$identity_verified = false;
 		try {
+			// Work on isolated copies. Preserve aliases such as wp_query === wp_the_query
+			// and restore the original objects, including references held by the caller.
+			foreach ( $saved as $name => $state ) {
+				if ( $state[0] && is_object( $state[1] ) ) {
+					if ( ! $clones->contains( $state[1] ) ) {
+						$clones[ $state[1] ] = clone $state[1];
+					}
+					$GLOBALS[ $name ] = $clones[ $state[1] ];
+				}
+			}
+			foreach ( $hooks as $name => $hook ) {
+				$GLOBALS['wp_filter'][ $name ] = is_object( $hook ) ? clone $hook : $hook;
+			}
 			self::$frontend_request = true;
+			// A headless installation may have no active theme declaring title support.
+			// Emit the WordPress document title with Rank Math's filters in this scope.
+			if ( function_exists( 'current_theme_supports' ) && ! current_theme_supports( 'title-tag' ) ) {
+				add_action( 'rank_math/head', static function () {
+					echo '<title>' . esc_html( wp_get_document_title() ) . '</title>';
+				}, 1 );
+			}
 			// Do not let incoming p/preview/replytocom parameters alter the trusted post query.
 			$_GET     = [];
 			$_POST    = [];
@@ -133,6 +159,8 @@ final class Metadata {
 			$response = rest_do_request( $request );
 			return $identity_verified ? $response : self::error( 'bridge_unverified_metadata', 'Rank Math did not verify the requested public post.', 503 );
 		} catch ( \Throwable $error ) {
+			/** Internal diagnostics; never included in the public metadata response. */
+			do_action( 'headless_bridge/metadata_generation_failed', $error );
 			return self::error( 'bridge_generation_failed', 'Metadata generation failed.', 503 );
 		} finally {
 			while ( ob_get_level() > $buffer ) {

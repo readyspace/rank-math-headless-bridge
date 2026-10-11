@@ -1,49 +1,70 @@
-# Controlled migration from site-specific helpers
+# Replacing older helper plugins
 
-This plugin does not deactivate, delete, or migrate existing helpers automatically. Similar names do not establish that two helpers have identical behavior. Review the actual code and current site configuration before deciding which modules replace them.
+A helper plugin is small custom code added to do a specific job. This bridge can
+replace some helpers, but it does not remove or migrate them automatically.
+Test one job at a time on a staging copy of your site.
 
-## 1. Inventory and back up
+## 1. Write down what you have
 
-Record each normal and must-use plugin, its file path, its role, and its known frontend dependency. Include SEO output, URL mapping, IndexNow, editor links, authenticated previews, CMS robots behavior, and mail behavior. Save recoverable copies of the current files, settings, and frontend deployment.
+Ask your developer to list normal plugins and must-use plugins, their file paths
+and what they do. Include SEO, URL mapping, IndexNow, View links, previews, CMS
+search instructions and email behavior. Back up the files, settings and frontend.
 
-Do not assume a custom safeguard only controls robots or mail. It may also change API access, redirects, forms, authentication, or other business behavior that this bridge does not implement. The initial bridge is a generalized implementation, not a byte-for-byte replacement for every legacy plugin.
+Names alone do not prove two plugins do the same job. An older helper might also
+handle logins, forms or redirects that this bridge does not cover.
 
-Record baseline results for a representative article, page, and custom post type: title, description, canonical, robots, JSON-LD, social images, public frontend response, CMS indexing directives, published View link, and authenticated Preview flow. Also record the current IndexNow key and submission behavior without posting the real key publicly.
+Save the current results for a post, page and custom content type. Record titles,
+descriptions, canonicals, robots, social images and schema. Also check View links,
+previews and IndexNow history. Keep real keys and passwords out of public reports.
 
-## 2. Prepare staging
+## 2. Set up a test copy
 
-Use a staging CMS and frontend with explicit test configuration. Keep production keys, credentials, and automatic submissions out of a shared test environment. Install the bridge with all modules disabled, then configure that staging frontend's exact origin and public post types.
+Use a staging CMS and frontend with their own settings. Keep live credentials
+and automatic live-site submissions out of a shared test setup.
 
-Implement the frontend metadata renderer and key file if those modules will be used. Check that the frontend actually supports the mapped paths; matching origins alone do not establish matching routes.
+Install the bridge with its features off. Set the test website address and public
+content types. Follow the [WPGraphQL start guide](quick-start.md) and connect the
+frontend renderer. Add an IndexNow key file only if you are testing that feature.
+Check that the public paths really exist in Next.js.
 
-## 3. Replace one role at a time
+## 3. Replace one job
 
-Enable a module only when its equivalent legacy behavior has been disabled on staging. Avoid running two IndexNow adapters or two conflicting SEO URL mappers together: both may change the same request or output.
+On staging, disable the old code for one job, then enable its bridge replacement.
+Do not run two competing URL mappers, SEO renderers or IndexNow adapters.
 
-Normal plugins can be deactivated through WordPress. **Must-use plugins cannot be deactivated through the usual Plugins screen.** Move the specific helper outside `wp-content/mu-plugins/` into a backed-up location, and check any loader file that includes it. Renaming a directory or moving a file may not disable code that a separate loader still imports. Preserve a clear rollback path; do not delete the only copy.
+Normal plugins can be deactivated in WordPress. Must-use plugins load from
+`wp-content/mu-plugins/` and cannot be turned off in the usual Plugins screen.
+Have your developer move the specific helper to a backup location and check any
+loader that includes it. Keep a working copy to restore; do not delete the only copy.
 
-Do not remove your authenticated preview provider merely because published View links work. Preview integration remains separate in this first version. Similarly, retain any legacy behavior that the bridge does not cover until an explicit replacement is ready.
+Keep your existing preview tool. A working published View link does not replace
+authenticated draft previews. Also keep any old behavior the bridge does not cover.
 
-## 4. Validate the replacement
+## 4. Compare the results
 
-| Area | What to check |
+| Area | What should work |
 | --- | --- |
-| Metadata | API output and initial frontend HTML have the intended title, description, canonical, robots, social tags, and schema. No duplicate conflicting tags. |
-| Schema | Eligible public site/content URLs use the frontend; media and unrelated URLs still resolve. |
-| Robots | CMS is noindexed only when intended. Frontend preserves intentional Rank Math post/type directives and remains indexable where intended. |
-| Key file | Current verification key is served as plain text with `200` on the exact public frontend host. |
-| Manual IndexNow | One test submission has the expected frontend URL, host, and key location; inspect Rank Math history. |
-| Publish/update | Automatic submission and frontend content/metadata refresh work with the deployment's cache policy. |
-| Editor View | Published eligible content opens the frontend. Draft/private/password-protected content does not gain public links. |
-| Preview | Existing authenticated previews still work and do not expose WordPress nonces or passwords in public URLs. |
-| Mail | With suppression off, required messages still work. If enabling it, test deliberate suppression, recovery, and any allowed mail calls. |
+| GraphQL or REST SEO | Correct title, description, canonical, robots, images and schema. |
+| Next.js page source | The same intended SEO, without competing duplicate tags. |
+| Addresses | Public page URLs use the public website. Images and outside links still work. |
+| Search instructions | CMS `noindex` applies only when wanted. A deliberate post `noindex` remains on the frontend. |
+| IndexNow | The public key file works; manual and automatic submissions use public URLs. |
+| Content updates | Changed content and SEO appear after the frontend's planned refresh. |
+| View links | Eligible published pages open the public website. |
+| Previews | Existing login-protected previews still work. No passwords or nonces enter public links. |
+| Email | Required email works with suppression off. If suppression is wanted, recovery and permitted messages are tested. |
 
-Test an intentionally noindexed post as well as an indexable post. CMS isolation must not accidentally convert deliberate noindex metadata into indexable frontend output. Test nested pages, custom post types, social images, and any custom permalink mapping your site uses.
+Test an indexable post and one deliberately marked `noindex`. Include nested
+pages, custom types, different social images and any custom path mapping.
 
-## 5. Roll out and roll back
+## 5. Move to the live site and keep a way back
 
-After staging results are satisfactory, schedule a controlled production change, deploy required frontend changes, back up current production settings, and repeat the critical checks. Adopt a released plugin version consistently across sites, with separate configuration for each installation.
+After staging passes, back up the live settings and files. Deploy the required
+frontend changes, replace one job and repeat the important checks.
 
-If a check fails, disable the affected bridge module, restore its corresponding helper and previous settings, and restore frontend changes if necessary. Recheck metadata, robots, editor links, and submissions after rollback. Keep mail recovery independent of a suppressed CMS mail channel.
+If a check fails, turn off that bridge feature and restore its old helper and
+settings. Restore frontend changes if needed. Recheck SEO, previews and
+submissions. Keep recovery independent of WordPress mail if mail is suppressed.
 
-Do not remove the original helper backups until the deployment has been observed and the team has a reliable recovery path. Submit sanitized compatibility findings to the repository so other sites can benefit from the migration work.
+Keep the backups while observing the live site. Share reports with example
+addresses and no private data so other developers can learn from them.

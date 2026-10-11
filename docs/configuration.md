@@ -1,47 +1,77 @@
-# Configuration and hooks
+# Plugin settings
 
-Configure each WordPress installation independently. The plugin does not share settings or credentials between websites.
+Each WordPress site has its own bridge settings. Start with the
+[WordPress + WPGraphQL + Next.js guide](quick-start.md), then return here for extra options.
 
-## Frontend origin and post types
+## Public website address
 
-Set the public frontend origin to an absolute HTTP(S) origin such as `https://www.example.com`. Do not include a content path, query string, fragment, or user credentials. Use HTTPS for IndexNow. The CMS and frontend must be separate, and the frontend host must be the one used by its canonical URLs and verification key.
+Enter the address visitors use, such as `https://www.example.com`.
+Do not add a page path, query or login details. The public website and WordPress
+must have separate origins. An origin is the beginning of an address, before a page path.
 
-Select only public post types that your frontend actually serves. The metadata endpoint and published editor links also require a published, publicly readable, password-free post. The default mapping retains each WordPress permalink's path and removes a CMS home subdirectory when present.
+The default mapping keeps page paths. For example, CMS `/news/hello/` becomes
+public `/news/hello/`. A CMS home subfolder is removed when needed.
+Images and unrelated websites keep their own addresses.
 
-Version 0.1.0 requires pretty WordPress permalinks for metadata, IndexNow, and published editor links. Plain query-string permalinks are not supported by those modules; configure and test a suitable permalink layout before enabling them.
+## Public content types
 
-Enable modules separately. Rank Math metadata and schema integrations depend on Rank Math being active; a missing provider should be treated as a setup error rather than replaced with fabricated SEO output.
+Select only the content your Next.js site displays, such as posts and pages.
+The SEO APIs also check that each item is published, public and has no password.
+Use readable WordPress permalinks. Plain `?p=123` links are not supported by the
+metadata, IndexNow and editor-link modules.
 
-## SEO and metadata
+## Main setup: WPGraphQL
 
-Enable Rank Math's **Headless CMS Support** and the bridge's metadata module to use `/wp-json/headless-bridge/v1/head?post_id=123`. The PHP DOM extension is required. A firewall must allow legitimate frontend requests to the CMS API.
+Activate WPGraphQL and Rank Math. Enable Rank Math **Headless CMS Support**.
+Then turn on **SEO through WPGraphQL** and **Correct Rank Math schema addresses**.
+The public REST endpoint can stay off. See the [query guide](graphql.md).
 
-The metadata endpoint accepts a post ID, not an arbitrary URL. It asks the local Rank Math provider for that post's metadata. The SEO module maps eligible site identity and content addresses, canonical URLs, and social page URLs to the frontend. It leaves protected backend paths, media, and unrelated origins intact.
+If WPGraphQL is missing, this GraphQL setup cannot work. The plugin does not
+switch to REST on its own. Other enabled features can still work without WPGraphQL.
+Both SEO APIs need PHP DOM on the WordPress server.
 
-CMS noindex is separate from a post's SEO intent. When the optional CMS safeguard is enabled, public CMS output receives noindex directives. During frontend metadata generation, that CMS-only override is excluded, while Rank Math's deliberate post and post-type directives remain applicable. Validate the actual response and generated frontend HTML on staging.
+## REST alternative
 
-## Editor links and preview
+Enable **Published-page SEO endpoint** and use the [REST guide](metadata.md).
+Next.js asks for SEO using a public WordPress post ID. Rank Math **Headless CMS
+Support** is still required. Choose one frontend SEO source, even if both APIs
+are enabled. Your firewall must allow the API requests you intend to use.
 
-The editor-link module maps eligible published links in the admin to the frontend. It does not rewrite authenticated previews, drafts, or password-protected content. Keep your existing Faust or other preview provider configured and test both **View** and **Preview** after any migration.
+## CMS search instructions
 
-This module leaves REST post responses unchanged. Some block-editor View links are populated from those responses; verify the link immediately after saving or publishing in Gutenberg. Your existing frontend integration may need to supply that link.
+**Keep the CMS out of search results** adds `noindex` to CMS responses. It does
+not protect the CMS with a login. While creating frontend SEO, the bridge leaves
+out this CMS-only rule. A deliberate Rank Math `noindex` choice for a post or
+content type still applies. Check both the API data and your Next.js page source.
 
-## Mail suppression
+## Editor links and previews
 
-Leave mail suppression disabled unless your architecture intentionally prevents WordPress from sending mail. Enabling it affects password resets, administrative notices, and other calls to `wp_mail`. Suppressed calls report failure rather than a successful delivery. It does not stop email sent directly by another service.
+**Public View links in the editor** changes eligible published View links to
+use the public website. Drafts and authenticated previews stay with your existing
+preview tool. Test both **View** and **Preview** after changing helpers.
 
-An application can explicitly allow individual mail calls through `headless_bridge/allow_cms_mail`. Avoid broad exceptions based on user-controlled fields. Test your recovery and notification workflows before enabling this option.
+Some Gutenberg View links come from REST post responses, which this module does
+not change. Check the link after saving or publishing; your frontend integration
+may need to supply it.
 
-## Extension hooks
+## WordPress email
 
-The initial extension points are:
+Leave **Suppress WordPress email** off if WordPress must send password resets,
+form notifications or admin notices. If enabled, suppressed `wp_mail` calls report
+failure. Emails sent directly by a separate service are outside this setting.
 
-| Filter | Input | Purpose |
+A developer can allow a specific message through `headless_bridge/allow_cms_mail`.
+Test recovery and notification flows before relying on that exception.
+
+## Developer hooks
+
+| Hook | Inputs | Purpose |
 | --- | --- | --- |
-| `headless_bridge/frontend_url` | Mapped URL, original URL | Customize content path mapping. Results must remain valid content URLs on the configured frontend origin. |
-| `headless_bridge/allow_cms_mail` | Boolean, `wp_mail` attributes | Permit a specific mail call when suppression is enabled. Default is false. |
+| `headless_bridge/frontend_url` | Mapped URL, original URL | Change a page path. The result must remain a valid content URL on the configured public origin. |
+| `headless_bridge/allow_cms_mail` | Boolean, mail attributes | Allow a specific message while mail suppression is on. Default: false. |
+| `headless_bridge/metadata_generation_failed` | Caught exception | Send generation details to private server logs. This is an action, not a URL filter. |
 
-For example, a frontend that places articles under `/articles/` rather than `/news/` can change the mapped path:
+For a site that uses `/articles/` publicly instead of CMS `/news/`:
 
 ```php
 add_filter( 'headless_bridge/frontend_url', function ( $mapped, $original ) {
@@ -54,4 +84,6 @@ add_filter( 'headless_bridge/frontend_url', function ( $mapped, $original ) {
 }, 10, 2 );
 ```
 
-This is an example, not an automatic route detector. Test the homepage, nested pages, custom post types, and canonical URLs. Do not redirect all published pages into an article route or append preview credentials. A custom mapping may need additional frontend or provider integration for metadata cases beyond the published-post endpoint.
+This changes mapped public URLs. Your Next.js content query must also map the
+public path back to the CMS path. Test nested pages, custom types and canonicals;
+do not send every content type to an article route or add preview credentials.

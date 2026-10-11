@@ -29,4 +29,32 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - run: node --test tests/frontend-example.test.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.18.0'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:next
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+  wordpress-integration:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        wordpress: ['6.7', 'latest']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.18.0'
+          cache: npm
+      - run: npm ci
+      - run: python3 scripts/package.py
+      - run: npm run test:wordpress
+        env:
+          BRIDGE_TEST_WP: ${{ matrix.wordpress }}
+          BRIDGE_TEST_PHP: '8.3'
+          BRIDGE_TEST_PACKAGE: dist/rank-math-headless-bridge-0.2.0-alpha.1.zip

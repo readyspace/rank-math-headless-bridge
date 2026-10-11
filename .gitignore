@@ -7,3 +7,6 @@ dist/
 .env.*
 !.env.example
 coverage/
+.next/
+next-env.d.ts
+*.tsbuildinfo

@@ -1,0 +1,21 @@
+{
+  "name": "headless-bridge-development",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/frontend-example.test.mjs && node --import tsx --test tests/app-router.test.tsx",
+    "test:wordpress": "node scripts/test-wordpress.mjs",
+    "test:next": "next build tests/fixtures/next-app --webpack && node scripts/check-next-html.mjs"
+  },
+  "devDependencies": {
+    "@wp-playground/cli": "3.1.57",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
+  "engines": { "node": ">=24.18.0" }
+}

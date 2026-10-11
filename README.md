@@ -1,83 +1,123 @@
 # Headless Bridge for Rank Math
 
-One configurable WordPress plugin for sites that use Rank Math in the CMS and a separate public frontend.
+Bring Rank Math's SEO settings from WordPress to a separate Next.js website.
 
-Instead of maintaining a different helper plugin for every website, install the same version on each WordPress site and give each installation its own frontend address and enabled modules. For example, one installation can connect `cms.example.com` to `www.example.com`, while another connects a different CMS to a different public website.
+You write and edit in WordPress. Visitors read your Next.js website. This plugin
+helps Next.js use the page title, description, search instructions and sharing
+images that Rank Math creates.
 
-**Status: 0.1.0 alpha.** This is an initial implementation for staging tests and community review. It is an independent, unofficial integration, not a Rank Math product. It does not bundle Rank Math. It does not install frontend code, deploy a website, migrate old helpers, or guarantee search-engine indexing.
+**Start here: [WordPress + WPGraphQL + Next.js setup](docs/quick-start.md).**
 
-## Optional modules
+Our main Next.js example uses **WPGraphQL** to ask for a page and its SEO data in
+one request. WPGraphQL is optional for the WordPress plugin. Developers who use
+REST can choose the [REST alternative](docs/metadata.md). Nothing switches APIs
+automatically, and every bridge feature starts turned off.
 
-All modules start disabled. Choose only the features your site needs.
+**Version: 0.2.0-alpha.1.** This is an early version for testing on a copy of your
+site. See [what has been tested](docs/validation.md) before using it on a live site.
 
-| Module | Purpose | Frontend work needed |
-| --- | --- | --- |
-| SEO URL mapping | Maps eligible CMS URLs in Rank Math structured data, canonicals, and social page addresses to the public frontend, preserving media and unrelated external URLs. | Inspect the rendered schema and your actual route layout. |
-| Metadata endpoint | Exposes normalized SEO data for published, publicly readable posts through a read-only REST endpoint. | Render this data in server-generated page HTML. |
-| IndexNow adapter | Adapts Rank Math's IndexNow submissions and verification-file location to the public frontend. | Deploy the current verification key file on that frontend. |
-| Published editor links | Sends eligible published **View** links in the WordPress admin to the frontend. | Keep your existing authenticated preview integration. |
-| CMS noindex | Adds noindex directives to the CMS while keeping frontend metadata generation separate. | Check the public frontend's robots directives independently. |
-| WordPress mail suppression | Stops mail sent through `wp_mail`, unless an application explicitly allows a call. | Confirm that disabling CMS mail suits your workflow. |
+## What is Rank Math?
 
-An ordinary WordPress website that already serves its public pages generally does not need this bridge. A headless site may already implement some of these features in its frontend or other plugins; avoid enabling overlapping implementations without testing.
+Rank Math is an SEO plugin for WordPress. It helps you set the titles and short
+descriptions search engines use, choose which pages can appear in search results,
+and add structured information about your content. It also helps prepare the
+previews people see when they share a link.
 
-## Requirements
+You manage these settings in WordPress with Rank Math. This bridge helps your
+separate Next.js website use the SEO data that Rank Math creates. Install Rank
+Math separately before setting up the bridge.
 
-- WordPress 6.5 or newer and PHP 7.4 or newer.
-- Rank Math installed separately for SEO and IndexNow modules.
-- Rank Math **Headless CMS Support** enabled for the metadata endpoint, and the PHP DOM extension available.
-- A separate configured frontend origin. Use its exact public origin, for example `https://www.example.com`, without an article path, query string, or credentials.
-- A frontend that renders SEO data on the server. The WordPress plugin alone cannot place tags in a Next.js page.
-- Pretty WordPress permalinks for the metadata, IndexNow, and editor-link modules in this first version.
-- For IndexNow, Rank Math's Instant Indexing module and settings configured, a standard HTTPS frontend host, and a publicly accessible verification file on that host.
+[Explore Rank Math (affiliate link)](https://rankmath.com/?ref=super%20salesman)
 
-Rank Math's [headless support documentation](https://rankmath.com/kb/headless-cms-support/) explains how to enable its native metadata provider. The bridge normalizes that provider's output; it does not replace Rank Math's SEO editor.
+**Affiliate disclosure:** This is an affiliate link. If you make a qualifying
+purchase through it, this project's owner may earn a commission.
 
-## Install and configure
+## How it works
 
-1. Back up your CMS and test on staging, especially if other headless helper plugins are already active.
-2. Put this repository's plugin folder at `wp-content/plugins/rank-math-headless-bridge`, or upload a release ZIP through WordPress.
-3. Activate **Headless Bridge for Rank Math**.
-4. Open **Settings → Headless Bridge**. Set the frontend origin and choose the public post types that exist on the frontend.
-5. Enable modules individually and validate each one. Follow the [migration guide](docs/migration.md) when replacing existing plugins.
-6. Integrate the [metadata endpoint](docs/metadata.md) into the frontend and, if needed, deploy the [IndexNow key file](docs/indexnow.md).
+1. **WordPress** stores your posts and pages.
+2. **Rank Math** creates their SEO data from your settings.
+3. **This bridge** prepares that data and fixes supported page addresses.
+4. **WPGraphQL** sends the requested page and SEO data to Next.js.
+5. **Next.js** puts the SEO tags in the page it sends to visitors and search engines.
 
-The default route mapping preserves the path: `https://cms.example.com/news/article/` becomes `https://www.example.com/news/article/`. If your frontend uses different routes, supply an explicit mapping and test it. This plugin does not discover a framework's route configuration automatically. WordPress's stored Home and Site URL settings are not changed.
+Example: a post edited at `cms.example.com/news/hello/` has its preferred public
+page address set to `www.example.com/news/hello/`. Images can stay on the CMS.
+The bridge keeps the path unless a developer adds a custom route mapping.
 
-## Frontend example
+Rank Math still owns the SEO settings and generates the data. The bridge uses
+its native headless API inside WordPress, including when Next.js uses GraphQL.
+This internal call does not make a second network request.
 
-For a public post with WordPress ID `123`, request:
+New to these terms? Read the [short glossary](docs/glossary.md).
 
-```text
-https://cms.example.com/wp-json/headless-bridge/v1/head?post_id=123
-```
+## What you need
 
-The response contains normalized title, description, canonical, robots, Open Graph, Twitter, and JSON-LD fields. Drafts, private posts, password-protected posts, and excluded post types are unavailable through this endpoint. See [the response contract](docs/metadata.md) and the [Next.js examples](examples/nextjs/README.md).
+- WordPress **6.7 or newer** and PHP **7.4 or newer**.
+- Rank Math installed and active. Turn on its **Headless CMS Support** option.
+- PHP **DOM**, a server feature used to read SEO tags. Ask your host if it is available.
+- A Next.js site that builds pages on the server. Our main example uses App Router and React 19.
+- WPGraphQL installed and active **if you choose the main GraphQL setup**.
+- WordPress links such as `/news/hello/`, rather than plain `?p=123` links.
 
-The examples render explicit React tags and safely serialize JSON-LD. They do not inject Rank Math's raw head HTML. Keep the SEO request in your frontend's server-side rendering or build flow; fetching tags only after a browser loads the page is not an equivalent integration.
+The plugin cannot place tags in Next.js by itself. You also need to add the
+frontend example to your Next.js project. The [setup guide](docs/quick-start.md)
+walks through both sides.
 
-## Important configuration choices
+## Choose the features you need
 
-**CMS noindex is a crawler directive, not access control.** It does not hide or authenticate the CMS. An intentional Rank Math noindex setting on a post must still be respected by the frontend.
+Open **Settings → Headless Bridge** in WordPress. All features start off.
 
-**Mail suppression blocks WordPress mail, including password resets and administrative notices.** Leave it disabled unless that is intentional and you have a working recovery process. Mail sent independently by an external service is outside this module's control.
+| Feature in WordPress | What it does |
+| --- | --- |
+| SEO through WPGraphQL | Main Next.js path: adds `headlessSeo` to your content queries. Requires WPGraphQL. |
+| Published-page SEO endpoint | REST alternative: Next.js asks for SEO using a WordPress post ID. |
+| Correct Rank Math schema addresses | Uses public page addresses in supported SEO data. Keeps image addresses where they belong. |
+| IndexNow frontend adapter | Helps Rank Math notify supported search engines about your public website's changed pages. |
+| Public View links in the editor | Opens eligible published pages on your public website. |
+| Keep the CMS out of search results | Adds `noindex` instructions to CMS pages. It does not add a login or block access. |
+| Suppress WordPress email | Stops WordPress emails, including password resets. Leave this off if you need those emails. |
 
-**Preview authentication remains with your preview provider.** The published editor-link module does not forward WordPress nonces or passwords to the frontend and does not replace Faust's preview flow.
+For the main setup, enable **SEO through WPGraphQL** and **Correct Rank Math
+schema addresses**. You can leave the REST endpoint off. Enabling either API
+never publishes drafts, private posts or password-protected posts through the
+bridge's SEO field.
 
-**An accepted IndexNow submission is a notification, not proof of indexing.** The key file must live on the host being submitted. The [IndexNow protocol documentation](https://www.indexnow.org/documentation) describes verification and response codes.
+## Current limits
 
-## Documentation and contributions
+This alpha handles published posts, pages and supported custom content types.
+It does not yet cover every Rank Math feature. Category/archive SEO, sitemaps,
+redirects, 404 reporting and automatic frontend cache updates are future work.
+Authenticated draft previews stay with your existing preview tool.
 
-- [Configuration and hooks](docs/configuration.md)
-- [Normalized metadata API](docs/metadata.md)
-- [IndexNow frontend setup](docs/indexnow.md)
-- [Controlled migration and rollback](docs/migration.md)
+GraphQL can combine content and SEO in one request. It does not guarantee a faster
+website. We have tested the results, but have not measured GraphQL against REST.
+
+## Guides
+
+- [Start here: WordPress, WPGraphQL and Next.js](docs/quick-start.md)
+- [Words used in these guides](docs/glossary.md)
 - [Next.js examples](examples/nextjs/README.md)
-- [Initial validation and remaining staging checks](docs/validation.md)
-- [Contributing](CONTRIBUTING.md), [security reporting](SECURITY.md), and [changelog](CHANGELOG.md)
+- [GraphQL query and troubleshooting](docs/graphql.md)
+- [Plugin settings and developer hooks](docs/configuration.md)
+- [REST alternative](docs/metadata.md)
+- [IndexNow setup](docs/indexnow.md)
+- [Replacing older helper plugins](docs/migration.md)
+- [Tests and limits](docs/validation.md)
+- [What we plan to build next](docs/roadmap.md)
+- [Contributing](CONTRIBUTING.md), [reporting security issues](SECURITY.md) and [changes](CHANGELOG.md)
 
-The initial implementation generalizes the roles of site-specific SEO, IndexNow, editor-link, and CMS safeguard helpers. It is not a byte-for-byte consolidation of every existing plugin or a completed migration of any live site. Real-world compatibility reports, tests, framework adapters, and staged migration guides are welcome.
+## Open source and credits
 
-## License
+This project is open source under [GPL-3.0-or-later](LICENSE). You can use, study,
+change and share it under that license. If you share a changed version, follow
+the same license and include its source code and required notices.
 
-Original project code is licensed under [GPL-3.0-or-later](LICENSE). Rank Math and framework dependencies remain separate projects with their own licensing and trademarks.
+**Thank you to the Rank Math team and contributors** for building Rank Math and
+its Headless CMS Support. Their work makes this bridge possible. Visit
+[Rank Math](https://rankmath.com/), their
+[official source repository](https://github.com/rankmath/seo-by-rank-math), and
+[headless setup guide](https://rankmath.com/kb/headless-cms-support/).
+
+This is an independent community project. Credit does not mean Rank Math has
+reviewed, approved or agreed to support it. Rank Math is installed separately;
+its source code is not bundled here. See [all credits](CREDITS.md).
