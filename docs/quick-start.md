@@ -9,9 +9,7 @@ frontend steps. You do not need to understand every line of code to follow the p
 
 ## 1. Check your starting point
 
-You need WordPress 6.7+, PHP 7.4+, Rank Math and a Next.js App Router project
-using React 19. Your WordPress server also needs PHP DOM. Ask your host to check
-that last item if you do not manage the server.
+You need WordPress 6.7+, PHP 7.4+, Rank Math and a Next.js App Router project using React 19. Your WordPress server also needs PHP DOM. Ask your host to check that last item if you do not manage the server.
 
 We use example addresses throughout:
 
