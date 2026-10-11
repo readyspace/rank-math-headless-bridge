@@ -93,12 +93,11 @@ final class Settings {
 
 	public static function register(): void {
 		add_action( 'admin_menu', static function () {
-			add_options_page( 'Headless Bridge', 'Headless Bridge', 'manage_options', 'headless-bridge', array( __CLASS__, 'render' ) );
+			add_options_page( __( 'Headless Bridge', 'headless-bridge-for-rank-math' ), __( 'Headless Bridge', 'headless-bridge-for-rank-math' ), 'manage_options', 'headless-bridge', array( __CLASS__, 'render' ) );
 		} );
 		add_action( 'admin_init', static function () {
 			register_setting( 'headless_bridge', self::OPTION, array( 'type' => 'array', 'sanitize_callback' => array( __CLASS__, 'sanitize' ), 'show_in_rest' => false, 'default' => self::defaults() ) );
 		} );
-		add_action( 'admin_notices', array( __CLASS__, 'legacy_notice' ) );
 	}
 
 	public static function legacy_notice(): void {
@@ -123,19 +122,20 @@ final class Settings {
 			return;
 		}
 		$config = self::get();
-		echo '<div class="wrap"><h1>Headless Bridge for Rank Math</h1><p>' . esc_html__( 'Connect a separate public website. Enable only the features that your site needs.', 'headless-bridge-for-rank-math' ) . '</p>';
+		echo '<div class="wrap"><h1>' . esc_html__( 'Headless Bridge for Rank Math', 'headless-bridge-for-rank-math' ) . '</h1><p>' . esc_html__( 'Connect a separate public website. Enable only the features that your site needs.', 'headless-bridge-for-rank-math' ) . '</p>';
 		settings_errors( self::OPTION );
+		self::legacy_notice();
 		echo '<form method="post" action="options.php">';
 		settings_fields( 'headless_bridge' );
 		echo '<table class="form-table"><tr><th><label for="hb-origin">' . esc_html__( 'Public website address', 'headless-bridge-for-rank-math' ) . '</label></th><td><input type="url" class="regular-text" id="hb-origin" name="' . esc_attr( self::OPTION ) . '[frontend_origin]" value="' . esc_attr( $config['frontend_origin'] ) . '" placeholder="https://www.example.com"><p class="description">' . esc_html__( 'Use the public origin only. Your CMS and media addresses stay unchanged.', 'headless-bridge-for-rank-math' ) . '</p></td></tr>';
 		$modules = array(
-			'seo' => array( 'Correct Rank Math schema addresses', 'Use the public website address for structured data, preserving CMS-hosted media.' ),
-			'metadata' => array( 'Published-page SEO endpoint', 'Provide normalized Rank Math metadata for allowed, published content. The frontend must render it. Enable Rank Math Headless CMS Support first.' ),
-			'graphql' => array( 'SEO through WPGraphQL', 'Add headlessSeo to content queries. Requires WPGraphQL and Rank Math Headless CMS Support; the REST metadata module can stay disabled.' ),
-			'indexnow' => array( 'IndexNow frontend adapter', 'Send Rank Math change notifications for the public website. Deploy the verification key file on the frontend before enabling.' ),
-			'editor_links' => array( 'Public View links in the editor', 'Open published content on the frontend. Authenticated preview links remain with your current preview provider.' ),
-			'cms_noindex' => array( 'Keep the CMS out of search results', 'Adds noindex to CMS responses. During public metadata generation, bypasses only the CMS-wide indexing flag and keeps page-level robots choices.' ),
-			'suppress_mail' => array( 'Suppress WordPress email', 'Blocks all wp_mail delivery, including password resets, form notifications and admin alerts. Leave this off if the CMS needs to send email.' ),
+			'seo' => array( __( 'Correct Rank Math schema addresses', 'headless-bridge-for-rank-math' ), __( 'Use the public website address for structured data, preserving CMS-hosted media.', 'headless-bridge-for-rank-math' ) ),
+			'metadata' => array( __( 'Published-page SEO endpoint', 'headless-bridge-for-rank-math' ), __( 'Provide normalized Rank Math metadata for allowed, published content. The frontend must render it. Enable Rank Math Headless CMS Support first.', 'headless-bridge-for-rank-math' ) ),
+			'graphql' => array( __( 'SEO through WPGraphQL', 'headless-bridge-for-rank-math' ), __( 'Add headlessSeo to content queries. Requires WPGraphQL and Rank Math Headless CMS Support; the REST metadata module can stay disabled.', 'headless-bridge-for-rank-math' ) ),
+			'indexnow' => array( __( 'IndexNow frontend adapter', 'headless-bridge-for-rank-math' ), __( 'Send Rank Math change notifications for the public website. Deploy the verification key file on the frontend before enabling.', 'headless-bridge-for-rank-math' ) ),
+			'editor_links' => array( __( 'Public View links in the editor', 'headless-bridge-for-rank-math' ), __( 'Open published content on the frontend. Authenticated preview links remain with your current preview provider.', 'headless-bridge-for-rank-math' ) ),
+			'cms_noindex' => array( __( 'Keep the CMS out of search results', 'headless-bridge-for-rank-math' ), __( 'Adds noindex to CMS responses. During public metadata generation, bypasses only the CMS-wide indexing flag and keeps page-level robots choices.', 'headless-bridge-for-rank-math' ) ),
+			'suppress_mail' => array( __( 'Suppress WordPress email', 'headless-bridge-for-rank-math' ), __( 'Blocks all wp_mail delivery, including password resets, form notifications and admin alerts. Leave this off if the CMS needs to send email.', 'headless-bridge-for-rank-math' ) ),
 		);
 		foreach ( $modules as $name => $info ) {
 			echo '<tr><th>' . esc_html( $info[0] ) . '</th><td><label><input type="checkbox" name="' . esc_attr( self::OPTION ) . '[' . esc_attr( $name ) . ']" value="1" ' . checked( ! empty( $config[ $name ] ), true, false ) . '> ' . esc_html__( 'Enable', 'headless-bridge-for-rank-math' ) . '</label><p class="description">' . esc_html( $info[1] ) . '</p></td></tr>';
@@ -150,10 +150,10 @@ final class Settings {
 		echo '</td></tr></table>';
 		submit_button();
 		echo '</form><h2>' . esc_html__( 'Setup status', 'headless-bridge-for-rank-math' ) . '</h2><ul>';
-		echo '<li>' . esc_html( class_exists( '\RankMath\Helper' ) ? 'Rank Math detected.' : 'Rank Math is not loaded. SEO and IndexNow require it.' ) . '</li>';
-		echo '<li>' . esc_html( function_exists( 'register_graphql_field' ) ? 'WPGraphQL detected.' : 'WPGraphQL is not loaded. Only the optional GraphQL module requires it.' ) . '</li>';
-		echo '<li>' . esc_html( UrlMapper::is_configured() ? 'A separate public frontend is configured.' : 'Configure a separate public frontend before enabling bridge modules.' ) . '</li>';
-		echo '<li>' . esc_html( get_option( 'permalink_structure' ) ? 'Pretty permalinks are configured.' : 'This version requires pretty permalinks for content URL mapping.' ) . '</li>';
+		echo '<li>' . esc_html( class_exists( '\RankMath\Helper' ) ? __( 'Rank Math detected.', 'headless-bridge-for-rank-math' ) : __( 'Rank Math is not loaded. SEO and IndexNow require it.', 'headless-bridge-for-rank-math' ) ) . '</li>';
+		echo '<li>' . esc_html( function_exists( 'register_graphql_field' ) ? __( 'WPGraphQL detected.', 'headless-bridge-for-rank-math' ) : __( 'WPGraphQL is not loaded. Only the optional GraphQL module requires it.', 'headless-bridge-for-rank-math' ) ) . '</li>';
+		echo '<li>' . esc_html( UrlMapper::is_configured() ? __( 'A separate public frontend is configured.', 'headless-bridge-for-rank-math' ) : __( 'Configure a separate public frontend before enabling bridge modules.', 'headless-bridge-for-rank-math' ) ) . '</li>';
+		echo '<li>' . esc_html( get_option( 'permalink_structure' ) ? __( 'Pretty permalinks are configured.', 'headless-bridge-for-rank-math' ) : __( 'This version requires pretty permalinks for content URL mapping.', 'headless-bridge-for-rank-math' ) ) . '</li>';
 		echo '<li>' . esc_html__( 'Frontend key-file reachability and rendering are checked separately during deployment; this page does not claim they are working.', 'headless-bridge-for-rank-math' ) . '</li></ul>';
 		if ( ! empty( $config['indexnow'] ) && class_exists( '\RankMath\Instant_Indexing\Api' ) ) {
 			$key = \RankMath\Instant_Indexing\Api::get()->get_key();
@@ -162,6 +162,6 @@ final class Settings {
 				echo '<p>' . esc_html__( 'The file must contain exactly the current Rank Math key. Rotate the frontend file whenever this key changes.', 'headless-bridge-for-rank-math' ) . '</p>';
 			}
 		}
-		echo '<p>' . esc_html__( 'This is alpha software. Test migration on staging before replacing existing helpers.', 'headless-bridge-for-rank-math' ) . '</p></div>';
+		echo '<p>' . esc_html__( 'Test migration on a staging site before replacing existing helpers.', 'headless-bridge-for-rank-math' ) . '</p></div>';
 	}
 }

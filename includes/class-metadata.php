@@ -27,7 +27,7 @@ final class Metadata {
 			'args'                => [
 				'post_id' => [
 					'type' => 'integer', 'minimum' => 1, 'required' => true,
-					'description' => 'ID of a published, password-free post in an allowed public post type.',
+					'description' => __( 'ID of a published, password-free post in an allowed public post type.', 'headless-bridge-for-rank-math' ),
 				],
 			],
 		] );
@@ -36,7 +36,7 @@ final class Metadata {
 	/** Accept a trusted ID, never an arbitrary URL or a preview request. */
 	public static function get_head( $request ) {
 		if ( ! Settings::enabled( 'metadata' ) ) {
-			return self::error( 'bridge_unavailable', 'The REST metadata module is disabled.', 503 );
+			return self::error( 'bridge_unavailable', __( 'The REST metadata module is disabled.', 'headless-bridge-for-rank-math' ), 503 );
 		}
 		$data = self::for_post( $request->get_param( 'post_id' ) );
 		return is_wp_error( $data ) ? $data : rest_ensure_response( $data );
@@ -45,34 +45,34 @@ final class Metadata {
 	/** Shared provider for REST and GraphQL. Returns normalized data or WP_Error. */
 	public static function for_post( $id ) {
 		if ( ( ! Settings::enabled( 'metadata' ) && ! Settings::enabled( 'graphql' ) ) || ! UrlMapper::is_configured() || ! RankMath::available() || ! function_exists( 'rest_do_request' ) || ! class_exists( '\DOMDocument' ) ) {
-			return self::error( 'bridge_unavailable', 'Metadata requires a configured frontend, Rank Math headless support, and the PHP DOM extension.', 503 );
+			return self::error( 'bridge_unavailable', __( 'Metadata requires a configured frontend, Rank Math headless support, and the PHP DOM extension.', 'headless-bridge-for-rank-math' ), 503 );
 		}
 		if ( ( ! is_int( $id ) && ( ! is_string( $id ) || ! ctype_digit( $id ) ) ) || (int) $id < 1 ) {
-			return self::error( 'bridge_invalid_post', 'A positive integer post_id is required.', 400 );
+			return self::error( 'bridge_invalid_post', __( 'A positive integer post_id is required.', 'headless-bridge-for-rank-math' ), 400 );
 		}
 		$post = get_post( (int) $id );
 		if ( ! self::is_public_post( $post ) ) {
-			return self::error( 'bridge_post_not_found', 'Public post not found.', 404 );
+			return self::error( 'bridge_post_not_found', __( 'Public post not found.', 'headless-bridge-for-rank-math' ), 404 );
 		}
 		$permalink = get_permalink( $post );
 		$public    = is_string( $permalink ) ? UrlMapper::to_frontend( $permalink, false ) : '';
 		$cms_url   = '' !== $public ? UrlMapper::to_cms( $permalink ) : '';
 		if ( '' === $cms_url ) {
-			return self::error( 'bridge_invalid_permalink', 'This post does not have a supported public permalink.', 422 );
+			return self::error( 'bridge_invalid_permalink', __( 'This post does not have a supported public permalink.', 'headless-bridge-for-rank-math' ), 422 );
 		}
 
 		$native = new \WP_REST_Request( 'GET', '/rankmath/v1/getHead' );
 		$native->set_param( 'url', $cms_url );
 		$response = self::native_head( $native, (int) $post->ID );
 		if ( is_wp_error( $response ) ) {
-			return self::error( 'bridge_rank_math_unavailable', 'Rank Math could not generate metadata. Enable its Headless CMS Support option.', 503 );
+			return self::error( 'bridge_rank_math_unavailable', __( 'Rank Math could not generate metadata. Enable its Headless CMS Support option.', 'headless-bridge-for-rank-math' ), 503 );
 		}
 		if ( ! is_object( $response ) || ! is_callable( [ $response, 'get_data' ] ) || ! is_callable( [ $response, 'get_status' ] ) ) {
-			return self::error( 'bridge_rank_math_unavailable', 'Rank Math did not return head metadata.', 503 );
+			return self::error( 'bridge_rank_math_unavailable', __( 'Rank Math did not return head metadata.', 'headless-bridge-for-rank-math' ), 503 );
 		}
 		$data = $response->get_data();
 		if ( $response->get_status() >= 400 || ! is_array( $data ) || empty( $data['success'] ) || ! isset( $data['head'] ) || ! is_string( $data['head'] ) ) {
-			return self::error( 'bridge_rank_math_unavailable', 'Rank Math did not return head metadata.', 503 );
+			return self::error( 'bridge_rank_math_unavailable', __( 'Rank Math did not return head metadata.', 'headless-bridge-for-rank-math' ), 503 );
 		}
 		$head = self::normalize_head( $data['head'] );
 		if ( is_wp_error( $head ) ) {
@@ -107,8 +107,12 @@ final class Metadata {
 		$hooks = $GLOBALS['wp_filter'] ?? [];
 		$server_values = [];
 		foreach ( [ 'REQUEST_URI', 'PATH_INFO', 'QUERY_STRING' ] as $name ) {
+			// Snapshot only: restore the caller's exact bytes, never use them as metadata input.
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$server_values[ $name ] = [ array_key_exists( $name, $_SERVER ), $_SERVER[ $name ] ?? null ];
 		}
+		// Preserve request context without processing form data or performing an administrative write.
+		// phpcs:ignore WordPress.Security.NonceVerification
 		$inputs     = [ $_GET, $_POST, $_REQUEST ];
 		$old_scope  = self::$frontend_request;
 		$buffer     = ob_get_level();
@@ -122,6 +126,8 @@ final class Metadata {
 					if ( ! $clones->contains( $state[1] ) ) {
 						$clones[ $state[1] ] = clone $state[1];
 					}
+					// These names come only from the fixed WordPress-core allowlist above.
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 					$GLOBALS[ $name ] = $clones[ $state[1] ];
 				}
 			}
@@ -157,11 +163,11 @@ final class Metadata {
 				add_action( 'rank_math/frontend/loaded', [ '\\RankMath\\Paper\\Paper', 'reset' ], 1 );
 			}
 			$response = rest_do_request( $request );
-			return $identity_verified ? $response : self::error( 'bridge_unverified_metadata', 'Rank Math did not verify the requested public post.', 503 );
+			return $identity_verified ? $response : self::error( 'bridge_unverified_metadata', __( 'Rank Math did not verify the requested public post.', 'headless-bridge-for-rank-math' ), 503 );
 		} catch ( \Throwable $error ) {
 			/** Internal diagnostics; never included in the public metadata response. */
 			do_action( 'headless_bridge/metadata_generation_failed', $error );
-			return self::error( 'bridge_generation_failed', 'Metadata generation failed.', 503 );
+			return self::error( 'bridge_generation_failed', __( 'Metadata generation failed.', 'headless-bridge-for-rank-math' ), 503 );
 		} finally {
 			while ( ob_get_level() > $buffer ) {
 				ob_end_clean();
@@ -174,6 +180,8 @@ final class Metadata {
 			$GLOBALS['wp_filter']   = $hooks;
 			foreach ( $saved as $name => $state ) {
 				if ( $state[0] ) {
+					// Restore existing WordPress-core globals; do not create plugin globals.
+					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 					$GLOBALS[ $name ] = $state[1];
 				} else {
 					unset( $GLOBALS[ $name ] );
@@ -199,7 +207,7 @@ final class Metadata {
 	/** Extract data fields only; callers never receive executable head HTML. */
 	public static function normalize_head( string $html ) {
 		if ( ! class_exists( '\DOMDocument' ) || '' === trim( $html ) || strlen( $html ) > 2097152 ) {
-			return self::error( 'bridge_invalid_metadata', 'Rank Math returned unsupported metadata.', 422 );
+			return self::error( 'bridge_invalid_metadata', __( 'Rank Math returned unsupported metadata.', 'headless-bridge-for-rank-math' ), 422 );
 		}
 		$result = [ 'title' => '', 'description' => '', 'canonical' => '', 'robots' => [], 'openGraph' => [], 'twitter' => [], 'jsonLd' => [] ];
 		$old    = libxml_use_internal_errors( true );
@@ -207,7 +215,7 @@ final class Metadata {
 		try {
 			$loaded = $dom->loadHTML( '<?xml encoding="UTF-8"><html><head>' . $html . '</head><body></body></html>', LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
 			if ( ! $loaded ) {
-				return self::error( 'bridge_invalid_metadata', 'Rank Math returned unsupported metadata.', 422 );
+				return self::error( 'bridge_invalid_metadata', __( 'Rank Math returned unsupported metadata.', 'headless-bridge-for-rank-math' ), 422 );
 			}
 			$titles = $dom->getElementsByTagName( 'title' );
 			if ( $titles->length ) {
@@ -260,7 +268,7 @@ final class Metadata {
 			libxml_use_internal_errors( $old );
 		}
 		if ( '' === $result['title'] && '' === $result['canonical'] && '' === $result['description'] && ! $result['robots'] && ! $result['openGraph'] && ! $result['twitter'] && ! $result['jsonLd'] ) {
-			return self::error( 'bridge_invalid_metadata', 'Rank Math returned no supported metadata.', 422 );
+			return self::error( 'bridge_invalid_metadata', __( 'Rank Math returned no supported metadata.', 'headless-bridge-for-rank-math' ), 422 );
 		}
 		$result['robots'] = (object) $result['robots'];
 		return $result;

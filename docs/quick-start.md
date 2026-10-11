@@ -3,15 +3,14 @@
 This guide connects an existing WordPress site to an existing Next.js site.
 WordPress is where you edit. Next.js is the website visitors see.
 
-Use a test copy of your site first. This plugin is still an alpha, which means
-it is an early version. Someone who manages your Next.js code must complete the
-frontend steps. You do not need to understand every line of code to follow the plan.
+Use a test copy of your site first. Version 0.2.0 is prepared for the first public
+release; the WordPress.org listing still needs review. Someone who manages your
+Next.js code must complete the frontend steps. You do not need to understand
+every line of code to follow the plan.
 
 ## 1. Check your starting point
 
-You need WordPress 6.7+, PHP 7.4+, Rank Math and a Next.js App Router project
-using React 19. Your WordPress server also needs PHP DOM. Ask your host to check
-that last item if you do not manage the server.
+You need WordPress 6.7+, PHP 7.4+, Rank Math and a Next.js App Router project using React 19. Your WordPress server also needs PHP DOM. Ask your host to check that last item if you do not manage the server.
 
 We use example addresses throughout:
 
@@ -29,6 +28,14 @@ settings as they are; configure the public website in the bridge instead.
 2. Install and activate **WPGraphQL**.
 3. Upload the bridge ZIP through **Plugins → Add New Plugin → Upload Plugin**.
 4. Activate **Headless Bridge for Rank Math**.
+
+The prepared ZIP is named `headless-bridge-for-rank-math-0.2.0.zip`. Its installed
+folder is `headless-bridge-for-rank-math`. If you already installed an older bridge
+ZIP, follow the [folder-change steps](migration.md#upgrading-an-older-bridge-zip)
+first. Do not activate two copies of the bridge.
+
+The WordPress ZIP contains the plugin. Keep using the guides and Next.js example
+files from this GitHub repository; they are separate from the WordPress install.
 
 WPGraphQL is required for this setup, but remains optional for the bridge as a
 whole. If your project uses REST, follow the [REST guide](metadata.md) instead.

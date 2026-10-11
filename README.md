@@ -13,8 +13,10 @@ one request. WPGraphQL is optional for the WordPress plugin. Developers who use
 REST can choose the [REST alternative](docs/metadata.md). Nothing switches APIs
 automatically, and every bridge feature starts turned off.
 
-**Version: 0.2.0-alpha.1.** This is an early version for testing on a copy of your
-site. See [what has been tested](docs/validation.md) before using it on a live site.
+**Version: 0.2.0.** Prepared for the first public release, with the supported
+features and limits below. The WordPress.org listing still needs submission and
+review. Test on a copy of your site first and read
+[what has been tested](docs/validation.md) before changing a live site.
 
 ## What is Rank Math?
 
@@ -31,6 +33,13 @@ Math separately before setting up the bridge.
 
 **Affiliate disclosure:** This is an affiliate link. If you make a qualifying
 purchase through it, this project's owner may earn a commission.
+
+## About ReadySpace
+
+[ReadySpace](https://readyspace.com) provides cloud and hosting services for
+businesses. ReadySpace and community contributors develop and share this free,
+open-source bridge. You can use it with your chosen hosting provider; a
+ReadySpace account is not required.
 
 ## How it works
 
@@ -63,6 +72,17 @@ The plugin cannot place tags in Next.js by itself. You also need to add the
 frontend example to your Next.js project. The [setup guide](docs/quick-start.md)
 walks through both sides.
 
+## Installing the prepared release
+
+The WordPress ZIP installs into `wp-content/plugins/headless-bridge-for-rank-math/`.
+It contains the WordPress plugin and its licence, changelog and credits.
+The setup guides and Next.js examples stay in this GitHub repository; they are
+not copied into your frontend or included in the lean WordPress ZIP.
+
+If you already installed an older ZIP under `rank-math-headless-bridge/`, follow
+the [folder-change steps](docs/migration.md#upgrading-an-older-bridge-zip) before
+activating this version. Keep only one bridge active.
+
 ## Choose the features you need
 
 Open **Settings → Headless Bridge** in WordPress. All features start off.
@@ -84,7 +104,7 @@ bridge's SEO field.
 
 ## Current limits
 
-This alpha handles published posts, pages and supported custom content types.
+This release handles published posts, pages and supported custom content types.
 It does not yet cover every Rank Math feature. Category/archive SEO, sitemaps,
 redirects, 404 reporting and automatic frontend cache updates are future work.
 Authenticated draft previews stay with your existing preview tool.
@@ -103,6 +123,7 @@ website. We have tested the results, but have not measured GraphQL against REST.
 - [IndexNow setup](docs/indexnow.md)
 - [Replacing older helper plugins](docs/migration.md)
 - [Tests and limits](docs/validation.md)
+- [Preparing the WordPress.org listing](docs/wordpress-org-submission.md)
 - [What we plan to build next](docs/roadmap.md)
 - [Contributing](CONTRIBUTING.md), [reporting security issues](SECURITY.md) and [changes](CHANGELOG.md)
 

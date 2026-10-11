@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
-"""Build an installable WordPress ZIP from an explicit public-file allowlist."""
+"""Build a lean WordPress.org ZIP from an explicit runtime-file allowlist."""
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 import re
 
 root = Path(__file__).resolve().parents[1]
+slug = 'headless-bridge-for-rank-math'
 files = [root / name for name in (
-    'rank-math-headless-bridge.php', 'README.md', 'readme.txt', 'LICENSE', 'CHANGELOG.md',
-    'CREDITS.md', 'CONTRIBUTING.md', 'SECURITY.md',
+    'rank-math-headless-bridge.php', 'uninstall.php', 'readme.txt', 'LICENSE',
+    'CHANGELOG.md', 'CREDITS.md',
 )]
-for directory in ('includes', 'docs', 'examples'):
-    files.extend(sorted(file for file in (root / directory).rglob('*') if file.is_file()))
+files.extend(sorted(file for file in (root / 'includes').glob('*.php') if file.is_file()))
 header = (root / 'rank-math-headless-bridge.php').read_text()
 match = re.search(r'^ \* Version: ([0-9A-Za-z.+-]+)$', header, re.MULTILINE)
 if not match:
     raise SystemExit('Missing plugin version header')
-target = root / 'dist' / f'rank-math-headless-bridge-{match.group(1)}.zip'
+target = root / 'dist' / f'{slug}-{match.group(1)}.zip'
 target.parent.mkdir(exist_ok=True)
 with ZipFile(target, 'w', ZIP_DEFLATED) as archive:
     for file in files:
         if not file.is_file():
             raise SystemExit(f'Missing expected release file: {file.name}')
-        archive.write(file, Path('rank-math-headless-bridge') / file.relative_to(root))
+        relative = Path('credits.txt') if file.name == 'CREDITS.md' else file.relative_to(root)
+        archive.write(file, Path(slug) / relative)
 print(target)

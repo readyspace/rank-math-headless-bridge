@@ -4,6 +4,7 @@
   "scripts": {
     "test": "node --test tests/frontend-example.test.mjs && node --import tsx --test tests/app-router.test.tsx",
     "test:wordpress": "node scripts/test-wordpress.mjs",
+    "check:plugin": "node scripts/check-wordpress-plugin.mjs",
     "test:next": "next build tests/fixtures/next-app --webpack && node scripts/check-next-html.mjs"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@
 
 ## Supported releases
 
-The project is currently an alpha. Security fixes are made on the latest development version and published release. A broader supported-version policy will be documented before a stable release.
+Security fixes target the latest published 0.2.x release and the development branch. Version 0.2.0 is prepared for its first public release; WordPress.org submission and approval are separate steps. Earlier alpha builds are unsupported once the public release is available.
 
 ## Report a vulnerability privately
 

@@ -63,6 +63,20 @@ failure. Emails sent directly by a separate service are outside this setting.
 A developer can allow a specific message through `headless_bridge/allow_cms_mail`.
 Test recovery and notification flows before relying on that exception.
 
+## Turning off or deleting the bridge
+
+Deactivating the plugin keeps its saved settings. Activate it again to use those
+settings. Turn off individual features in the bridge settings if you only want
+to stop one job.
+
+Deleting the new `headless-bridge-for-rank-math` version through WordPress removes
+the bridge's own saved settings. It does not delete Rank Math settings, posts or
+Next.js files. Back up your bridge settings before deleting it.
+
+If moving from the older `rank-math-headless-bridge` folder, use the
+[migration steps](migration.md#upgrading-an-older-bridge-zip) so you preserve your
+settings and keep only one bridge active.
+
 ## Developer hooks
 
 | Hook | Inputs | Purpose |
