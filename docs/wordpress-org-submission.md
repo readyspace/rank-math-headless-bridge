@@ -6,8 +6,9 @@ first. After approval, we upload the release to its separate SVN repository.
 
 **Current status: preparation, not submitted or approved.** Version **0.2.0** is
 prepared as the first public release. The package passed local Plugin Check and
-WordPress integration checks. The remaining steps below include readme validation,
-completed branch CI, account sign-in and WordPress.org review.
+WordPress integration checks, the online readme validator and all eight CI jobs.
+The owner is signed in to WordPress.org. Submission and review remain separate
+steps and have not been completed.
 
 ## Proposed listing
 
@@ -39,8 +40,8 @@ Suggested explanation for the reviewer:
 ## Submission preparation checklist
 
 - [x] The owner confirmed the WordPress.org account `readyspace`. The readme
-  lists that account as a contributor. Signing in and submitting remain separate
-  steps; no credentials or account session are assumed.
+  lists that account as a contributor. The WordPress.org session was observed
+  signed in as ReadySpace. The plugin has not been submitted.
 - [x] The prepared version is `0.2.0`. Its PHP version header, version constant,
   readme stable tag and release folder agree.
 - [x] Official WordPress **Plugin Check 2.1.0** passed all 29 non-experimental
@@ -49,8 +50,10 @@ Suggested explanation for the reviewer:
   [saved report](plugin-check-report.json) lists every check. No check or result
   code was excluded; optional AI analysis was not enabled. Static checks are
   separate from runtime tests and do not mean WordPress.org approval.
-- [ ] Check the final `readme.txt` with the official readme validator. Confirm
-  the verified contributors and final stable version are present.
+- [x] The official online readme validator checked the public preparation
+  branch's `readme.txt`: **no errors and no warnings**. Its only notes concern
+  optional sections: Upgrade Notice, Screenshots and a donate link. These
+  optional notes do not block submission.
 - [x] The prepared ZIP installed and activated on disposable WordPress 6.7.10
   and 7.1.3 sites with real Rank Math and WPGraphQL. Each run passed 55 integration,
   63 settings/mapping and 115 metadata/Rank Math assertions. The final runtime
@@ -61,10 +64,12 @@ Suggested explanation for the reviewer:
 - [x] PHP compatibility limits are documented. The declared minimum is 7.4;
   real-provider integration was checked on PHP 8.3.33. The local PHP 7.4
   Playground failure does not establish real-provider PHP 7.4 support.
-- [ ] Check the preparation branch's completed CI results for the final commit.
-  Native PHP 7.4, 8.1, 8.3 and 8.4 jobs and the native static-check job are
-  configured. Previous native regression results do not replace this run or
-  establish full Rank Math integration on every PHP version.
+- [x] [All eight CI jobs passed](https://github.com/readyspace/rank-math-headless-bridge/actions/runs/38145676029)
+  for preparation commit `0b10e047c8f0d6e1a2bb13fc8c1f16b5c4506557`. These include
+  native PHP 7.4, 8.1, 8.3 and 8.4 checks, frontend tests, WordPress 6.7 and
+  latest-version integration, and native directory Plugin Check. Native PHP
+  regression checks do not establish full Rank Math integration on every PHP
+  version; real-provider PHP 7.4 support remains unverified.
 - [x] The package includes its GPL-compatible licence and `credits.txt`.
   The name uses "for Rank Math" and explains that this is an independent
   project. WordPress.org still decides whether the name and slug are acceptable.

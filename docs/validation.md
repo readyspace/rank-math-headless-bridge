@@ -28,10 +28,20 @@ files. Additional checks passed for disabling the GraphQL module, running withou
 WPGraphQL, and uninstalling through WordPress. Uninstall removed only the bridge
 settings and preserved Rank Math settings and site content.
 
-The minimum-version run preceded the final nonfunctional Plugin Check fixes;
-the latest-version run used the final runtime files. Native PHP matrix and
-WordPress.org static-check CI jobs are configured for the preparation branch.
-Check the latest commit's completed CI results before approving a release.
+The minimum-version local run preceded the final nonfunctional Plugin Check
+fixes; the latest-version local run used the final runtime files. All eight
+[GitHub CI jobs](https://github.com/readyspace/rank-math-headless-bridge/actions/runs/38145676029)
+passed for release source commit `0b10e047c8f0d6e1a2bb13fc8c1f16b5c4506557`.
+This includes native PHP 7.4, 8.1, 8.3 and 8.4 regression jobs, the Next.js
+production build, packaged WordPress 6.7/latest integration and official Plugin
+Check on native PHP 8.3. The native Plugin Check job reported no errors. It runs
+static checks; real-provider runtime tests remain separate.
+
+The [WordPress.org readme validator](https://wordpress.org/plugins/developers/readme-validator/)
+checked the public preparation branch's `readme.txt`. It reported no errors or
+warnings, only notes about optional Upgrade Notice, Screenshots and donation
+sections. Contributor `readyspace` and stable tag `0.2.0` appeared in the
+validated readme. Directory submission and approval have not taken place.
 
 ## Earlier alpha validation
 
