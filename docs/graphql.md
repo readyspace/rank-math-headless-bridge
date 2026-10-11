@@ -1,15 +1,16 @@
-# Optional WPGraphQL integration
+# GraphQL: the main Next.js integration
 
-Enable **SEO through WPGraphQL** under Settings → Headless Bridge. Install
-WPGraphQL and Rank Math separately, enable Rank Math's Headless CMS Support,
-configure pretty permalinks and the public frontend origin, and choose the
-public content types your frontend serves. PHP DOM is required. The REST
-metadata module does not need to be enabled.
+WPGraphQL lets Next.js ask WordPress for a page and its SEO in one request.
+The bridge adds an SEO field called `headlessSeo` to supported content.
 
-The bridge adds `headlessSeo` to WPGraphQL's `ContentNode` interface. Posts,
-pages and custom post types registered with `show_in_graphql` inherit the field.
-It uses the same computed Rank Math provider and URL normalization as REST.
-It does not copy arbitrary post meta or expose Rank Math's private options.
+WPGraphQL is optional for the WordPress plugin, but required for this integration.
+See the [setup guide](quick-start.md) before running the query below. The bridge's
+REST endpoint can stay off. There is no automatic REST fallback.
+
+## Ask for one post and its SEO
+
+Run this in your GraphQL tool against your WordPress GraphQL address, usually
+`https://cms.example.com/graphql`. Replace the example address with your own.
 
 ```graphql
 query PublicPostSeo($id: ID!) {
@@ -30,53 +31,68 @@ query PublicPostSeo($id: ID!) {
 }
 ```
 
-Pass a numeric WordPress ID as the `$id` variable. `postId` matches the node's
-`databaseId`. Custom post types use their own registered GraphQL root fields,
-or a content-node query with the appropriate fragments.
+In the tool's **Variables** box, enter your numeric post ID as a string:
 
-## Response contract
+```json
+{ "id": "123" }
+```
 
-Fields match the [REST metadata contract](metadata.md), except that `jsonLd`
-contains one **JSON string** per schema script. This keeps the GraphQL type
-stable when an editor changes Rank Math's schema type. Parse each string as
-JSON, then safely serialize the decoded value when rendering. It is never
-raw HTML. The App Router adapter's `normalizeHeadlessSeo` accepts both transports.
-Open Graph and Twitter remain ordered lists so repeated images are preserved.
+Use a real published post ID instead of `123`. The page's `title` is its visible
+WordPress title. `headlessSeo.title` is the search title computed by Rank Math.
+`postId` should match `databaseId`.
 
-`headlessSeo` is nullable. It returns null for excluded post types, drafts,
-private or password-protected posts, including when the caller is an administrator.
-WPGraphQL first applies its own node permissions. If a public supported post's
-provider fails, the field returns null and GraphQL reports an error; clients
-must check `errors` even when the HTTP response is 200.
+Pages and custom content types have their own query fields. A developer can also
+use `nodeByUri` to find content by its path. The [Next.js example](../examples/nextjs/app-router/get-content.ts)
+does that. Custom types must be public, allowed in bridge settings and registered
+with WPGraphQL using `show_in_graphql`.
 
-Authenticated preview SEO is deliberately outside this public contract. Keep
-your existing preview provider. Do not mark this field previewable or reuse it
-to expose draft metadata without a separately reviewed integration.
+## What the SEO fields mean
 
-## Coexistence and performance
+| Field | Meaning |
+| --- | --- |
+| `title` and `description` | The search title and short description created by Rank Math. |
+| `canonical` | The preferred page address, when Rank Math provides one. |
+| `robots` | Search-engine instructions, including deliberate `noindex`. |
+| `openGraph` and `twitter` | Sharing tags. Lists keep repeated images in order. |
+| `jsonLd` | Schema data. GraphQL returns one JSON **string** per schema script. |
 
-The bridge uses `headlessSeo` and `HeadlessBridge*` types rather than another
-plugin's `seo` field or Rank Math types. Choose one frontend SEO owner even if
-another GraphQL SEO extension is active. Compatibility with every such extension
-has not been established by the current tests.
+Our Next.js helper reads each schema string with `JSON.parse` and safely writes it
+into the page. REST returns the schema already decoded as objects or arrays.
+Both APIs use the same Rank Math generator. See the [field reference](metadata.md)
+for the shared data shape and the [glossary](glossary.md) for unfamiliar terms.
 
-The resolver reuses generated metadata for a post within the current GraphQL
-context. It does not create a persistent metadata cache. Rank Math's native
-provider rebuilds WordPress query state per distinct post, so do not request
-SEO for thousands of nodes in one query. Pagination and production benchmarks
-are required for large builds.
+## When something goes wrong
 
-The GraphQL module adds nothing when disabled and can be used without enabling
-the bridge's REST route. If WPGraphQL is absent, the other modules remain usable.
-Clear any external GraphQL schema cache after enabling or disabling the module.
+| What you see | What to check |
+| --- | --- |
+| `headlessSeo` is an unknown field | Activate WPGraphQL, enable **SEO through WPGraphQL**, then clear any saved GraphQL schema in your tools or cache. |
+| `post` is `null` | Check the post ID and whether the caller can read that post. Use a published public post for this test. |
+| `headlessSeo` is `null` | Drafts, private posts, password-protected posts and excluded types do not get public bridge SEO, even for an administrator. |
+| `headlessSeo` is `null` and the response has `errors` | Check Rank Math, Headless CMS Support, PHP DOM and the public website address. |
+| CMS addresses or wrong paths appear | Check the bridge's public website address and any custom path mapping. Check the actual Next.js HTML too. |
 
-Generation failures can be observed server-side through
-`headless_bridge/metadata_generation_failed`, which receives the caught exception.
-Keep diagnostics in private logs; the public transport returns a generic error.
+A GraphQL response can have HTTP status `200` and still contain `errors`. Our
+example checks those errors rather than treating broken SEO as a good result.
+Keep your existing authenticated preview tool for drafts.
 
-## Current coverage
+## Notes for developers
 
-Published posts, pages and eligible custom post types are supported. Taxonomy,
-author, archive, search, 404 and preview metadata are separate future work.
-Sitemap serving, redirect execution, 404 reporting and cache-invalidation webhooks
-are not implemented by this field.
+The field is on WPGraphQL's `ContentNode` interface. Its bridge-specific name
+helps avoid clashes with another plugin's `seo` field. Still, choose one source
+of SEO tags in Next.js so pages do not contain competing tags.
+
+Repeated requests for the same post inside one GraphQL execution reuse its SEO.
+That saved result is not kept between requests. Rank Math still generates a full
+head for each distinct post, even if the query only selects its title. Use small
+pages of results for large sites. A single GraphQL request is not a speed guarantee.
+
+The generator calls Rank Math's local REST route inside PHP. This does not make
+an extra network request or require the bridge's public REST endpoint to be on.
+If WPGraphQL is absent, non-GraphQL bridge features can still work.
+
+For server-side diagnostics, `headless_bridge/metadata_generation_failed` receives
+a caught exception. Keep details in private logs. Public errors stay generic.
+
+This field supports published posts, pages and eligible custom types. Category,
+author, archive, search, 404 and preview SEO are future work. So are sitemaps,
+redirect handling and automatic cache-update notices.

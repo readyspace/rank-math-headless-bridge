@@ -1,42 +1,50 @@
-# Roadmap
+# What we plan to build next
 
-## Current milestone: WPGraphQL and App Router
+## Available in this alpha
 
-- Optional `ContentNode.headlessSeo` backed by the shared metadata provider.
-- Published content only; private/draft/password restrictions remain intact.
-- App Router metadata and social/schema rendering examples.
-- Disposable real WordPress/Rank Math/WPGraphQL integration tests and production
-  Next.js HTML checks.
+- WPGraphQL is the main Next.js integration, but optional for the WordPress plugin.
+- REST remains a separate alternative. There is no automatic API fallback.
+- Rank Math creates SEO for published posts, pages and supported custom types.
+- Drafts, private posts and password-protected posts are excluded from public bridge SEO.
+- App Router examples render search tags, sharing tags and schema on the server.
+- Tests use real WordPress, Rank Math and WPGraphQL, plus a Next.js production build.
 
-This milestone remains an alpha until real installation reports and staging
-acceptance cover the intended deployments. No public-directory submission or
-production migration is implied by completing it.
+See [test results and limits](validation.md). This alpha still needs reports from
+real staging sites. It is not a complete migration or every Rank Math feature.
 
-## Next: publishing freshness
+## Next: keep saved pages fresh
 
-Design explicit, administrator-configured frontend notifications for post,
-taxonomy and global Rank Math settings changes. Include signed payloads, bounded
-retries, diagnostic status, and Next.js cache invalidation. Handle unpublishing,
-deletion and slug changes, including invalidating old paths. Notification URLs
-must be explicitly configured, never supplied by an unauthenticated request.
+When an editor changes content or SEO, Next.js should refresh any saved copy.
+Plan notifications from WordPress to an address set by the administrator.
+Include a signature to verify the sender, limited retries and useful status messages.
 
-## Then: route and discovery coverage
+Cover title and SEO changes, global settings, unpublished or deleted posts and
+changed page paths. An old path may need refreshing too. Do not let visitors
+choose where the server sends these notices.
 
-Add taxonomy, author, archive, search and 404 contexts with frontend route mapping.
-Support public-host XML sitemaps and robots.txt with a documented ownership choice.
-Keep CMS-only noindex separate from intentional frontend noindex.
+## Then: more page types and discovery
 
-## Then: request-time SEO workflows
+Add SEO for categories, authors, archives, search results and 404 pages.
+Each needs a clear public path mapping.
 
-Expose or synchronize redirects and ensure the frontend emits the requested HTTP
-status. Start with exact-match redirects and expand matching semantics only with
-tests. Add optional frontend 404 reporting with authentication, rate limiting,
-data minimization and retention controls.
+Add public XML sitemaps and robots.txt. A sitemap lists page addresses for search
+engines. robots.txt gives crawler instructions. Decide whether WordPress or Next.js
+serves these files, and keep CMS-only `noindex` separate from public-page choices.
 
-## Stable public release
+## Then: redirects and 404 reports
 
-Run WordPress Plugin Check, verify dependency handling and installation ZIPs,
-document supported versions and installed Pro features, and gather staging reports.
-Choose a WordPress.org-compatible independent slug and align the text domain.
-Multisite, multilingual routing, WooCommerce and authenticated preview SEO require
-their own supported-feature decisions and compatibility checks.
+A redirect sends an old address to a new one. The frontend must return the correct
+HTTP status, not only display a different page. Start with exact-match redirects.
+
+Optional 404 reports could tell WordPress when a public page is missing. Plan
+sender verification, limits on reports, minimal stored data and a retention period.
+
+## Before a stable public release
+
+Run WordPress Plugin Check, verify dependencies and ZIP installation, and record
+the versions and Pro features actually supported. Confirm an independent
+WordPress.org slug and matching text domain.
+
+Test multisite, multilingual paths, WooCommerce and authenticated previews before
+claiming support. Gather staging feedback. Publishing to WordPress.org and
+changing live websites are separate steps.

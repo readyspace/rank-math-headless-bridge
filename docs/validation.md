@@ -1,5 +1,10 @@
 # Validation for 0.2.0-alpha.1
 
+These checks use test sites and test pages to see whether the bridge returns the
+right SEO and keeps private content out. They also check the HTML built by Next.js.
+Passing them is useful evidence, but your own staging site still needs testing.
+The sections below record the exact versions and remaining limits for developers.
+
 These are isolated development results from 2026-10-11. They do not certify a
 production migration or complete Rank Math feature coverage.
 

@@ -1,4 +1,12 @@
-# Normalized metadata API
+# REST alternative: SEO data reference
+
+For new Next.js integrations, start with [WPGraphQL](graphql.md) and the
+[setup guide](quick-start.md). This page is for developers who choose REST.
+WPGraphQL is not required for REST, and the plugin does not switch APIs on its own.
+
+REST asks a specific web address for data. Here, it returns SEO for a public
+WordPress post ID. It does not return the article text. The [glossary](glossary.md)
+explains terms such as canonical, robots and JSON-LD.
 
 ## Request
 
@@ -12,11 +20,11 @@ This public read-only endpoint is limited to published, publicly readable, passw
 
 Rank Math remains the metadata provider. Its [native headless API](https://rankmath.com/kb/headless-cms-support/) returns head HTML; the bridge extracts supported fields into JSON for explicit rendering.
 
-The optional [WPGraphQL module](graphql.md) exposes the same provider through
+Our main Next.js path, the optional [WPGraphQL module](graphql.md), uses the same generator through
 `ContentNode.headlessSeo`. Enable REST, GraphQL or both as needed. See the
 [App Router adapter](../examples/nextjs/app-router/README.md) for modern Next.js rendering.
 
-## Successful response
+## Example SEO response
 
 ```json
 {
@@ -49,7 +57,7 @@ The optional [WPGraphQL module](graphql.md) exposes the same provider through
 
 This is an illustrative response, not a promise that every post has every tag.
 
-| Field | Type | Handling |
+| Field | Type | How to use it |
 | --- | --- | --- |
 | `postId` | Integer | WordPress post ID requested. |
 | `title`, `description`, `canonical` | String | Empty if that field is absent. Avoid rendering empty tags. |
@@ -71,7 +79,7 @@ Errors use WordPress REST's normal `code`, `message`, and `data.status` shape. D
 | 422 | Unsupported permalink or metadata that could not be parsed as usable provider output. |
 | 503 | Configuration, a dependency, the native provider, or provider data is unavailable. |
 
-## Frontend rendering
+## Put the SEO in the page HTML
 
 Request metadata during server rendering, static generation, or an equivalent framework build step and render the result in the initial HTML. Integrate it with your existing route-level SEO component; emitting a second set of conflicting canonical or robots tags can undo the intended result.
 
@@ -81,6 +89,6 @@ Choose and test a frontend cache policy that fits your content publishing workfl
 
 When the CMS noindex module is enabled, the metadata generation path excludes that CMS-only safeguard. It must still respect noindex intentionally set in Rank Math for an individual post or post type. Confirm both the API response and the rendered frontend page, rather than checking the WordPress editor alone.
 
-## Current scope
+## What is supported now
 
 The first version focuses on published posts and pages, including eligible public custom post types. It does not provide a generalized archive, taxonomy, author, search, 404, or authenticated preview metadata endpoint. Those routes require an explicit frontend implementation or a separately reviewed adapter.

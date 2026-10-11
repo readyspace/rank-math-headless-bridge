@@ -2,6 +2,9 @@
 
 ## 0.2.0-alpha.1
 
+- Lead Next.js setup and examples with WPGraphQL while keeping it optional at the plugin level; explain REST as a separate choice without automatic fallback.
+- Add beginner setup steps, a glossary and troubleshooting; simplify the existing guides.
+- Credit Rank Math and the other upstream projects in the README, plugin readme and packaged CREDITS.md; retain GPL-3.0-or-later licensing.
 - Add optional `ContentNode.headlessSeo` WPGraphQL metadata, separate from other SEO extensions.
 - Share the public-only Rank Math metadata provider between REST and GraphQL.
 - Isolate native query generation without replacing the caller's original WordPress objects or breaking main-query aliases.

@@ -1,5 +1,9 @@
 # Contributing
 
+Clone the full [GitHub repository](https://github.com/readyspace/rank-math-headless-bridge)
+before running the development commands below. The installable ZIP includes guides
+but does not include tests or development dependencies.
+
 Run `php tests/run.php`, `php tests/metadata-test.php` (DOM required), and
 `node --test tests/frontend-example.test.mjs` before proposing a change.
 Build an installable ZIP with `python3 scripts/package.py`.
@@ -32,6 +36,9 @@ Use generic example domains such as `cms.example.com` and `www.example.com`. Do 
 
 ## Design rules
 
+- Make WPGraphQL the main Next.js example and setup guide, while keeping it optional for the WordPress plugin. REST is an explicit alternative, never an automatic fallback.
+- Write user guides in plain language: define new terms, use short steps and show a concrete example. Keep deeper API details in a clearly marked developer section.
+- Preserve the GPL-3.0-or-later license and the upstream acknowledgments in [CREDITS.md](CREDITS.md). Give Rank Math credit without implying its endorsement.
 - Keep features optional and disabled until the administrator configures them.
 - Preserve authenticated preview flows; published editor links and preview authentication have different requirements.
 - Restrict URL mapping to the configured CMS and frontend origins. Preserve media addresses and unrelated external links.

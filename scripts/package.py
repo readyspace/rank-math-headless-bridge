@@ -7,6 +7,7 @@ import re
 root = Path(__file__).resolve().parents[1]
 files = [root / name for name in (
     'rank-math-headless-bridge.php', 'README.md', 'readme.txt', 'LICENSE', 'CHANGELOG.md',
+    'CREDITS.md', 'CONTRIBUTING.md', 'SECURITY.md',
 )]
 for directory in ('includes', 'docs', 'examples'):
     files.extend(sorted(file for file in (root / directory).rglob('*') if file.is_file()))
