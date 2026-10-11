@@ -4,6 +4,15 @@ Run `php tests/run.php`, `php tests/metadata-test.php` (DOM required), and
 `node --test tests/frontend-example.test.mjs` before proposing a change.
 Build an installable ZIP with `python3 scripts/package.py`.
 
+For the current integration milestone, use Node 24.18 or newer and run `npm ci`,
+`npm test`, `npm run test:wordpress`, and `npm run test:next`. The WordPress runner
+creates a disposable Playground installation with real upstream plugins; it needs
+network access on the first run. Set `BRIDGE_TEST_WP` and `BRIDGE_TEST_PHP` to
+choose versions. `BRIDGE_TEST_DEPENDENCIES` can point at a local directory
+containing extracted `seo-by-rank-math` and `wp-graphql` plugin folders.
+After packaging, set `BRIDGE_TEST_PACKAGE=dist/rank-math-headless-bridge-0.2.0-alpha.1.zip`
+to install and test the ZIP instead of mounting the source as the active plugin.
+
 Thank you for helping make headless WordPress SEO easier to configure and maintain. This project is an independent integration with Rank Math, not a Rank Math product.
 
 ## Start here
@@ -17,7 +26,7 @@ Thank you for helping make headless WordPress SEO easier to configure and mainta
 
 Clone the repository into a local WordPress development environment. Use the folder name `rank-math-headless-bridge`. Install Rank Math separately; this repository does not bundle its code.
 
-The initial compatibility target is WordPress 6.5 or newer and PHP 7.4 or newer. Run the checks documented in the repository's CI workflow before opening a pull request. For a change to a WordPress hook, add a focused test of its observable behavior and test it in a disposable WordPress installation. Pure unit tests do not establish full Rank Math compatibility.
+The current compatibility target is WordPress 6.7 or newer and PHP 7.4 or newer, matching the current Rank Math minimum. Run the checks documented in the repository's CI workflow before opening a pull request. For a change to a WordPress hook, add a focused test of its observable behavior and test it in a disposable WordPress installation. Pure unit tests do not establish full Rank Math compatibility.
 
 Use generic example domains such as `cms.example.com` and `www.example.com`. Do not commit production configuration, authentication cookies, application passwords, private keys, customer content, or a real site's IndexNow key. Do not import third-party plugin source without confirming that the license permits it and preserving required attribution.
 

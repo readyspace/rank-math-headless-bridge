@@ -2,6 +2,9 @@
 
 These are integration examples, not a complete frontend application. Adapt them to your existing routes, content fetching, preview provider, and deployment. They are not automatically installed by the WordPress plugin.
 
+For App Router applications using React 19, start with the [App Router adapter](app-router/README.md).
+It supports both the complete REST response and the optional WPGraphQL `headlessSeo` fragment.
+
 ## Server-rendered metadata with the Pages Router
 
 1. Configure the WordPress plugin's frontend origin, allowed public post types, and metadata module. Enable Rank Math's Headless CMS Support.

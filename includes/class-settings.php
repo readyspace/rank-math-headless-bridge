@@ -11,6 +11,7 @@ final class Settings {
 			'frontend_origin' => '',
 			'seo' => false,
 			'metadata' => false,
+			'graphql' => false,
 			'indexnow' => false,
 			'editor_links' => false,
 			'cms_noindex' => false,
@@ -56,11 +57,11 @@ final class Settings {
 		if ( ! empty( $input['frontend_origin'] ) && '' === $output['frontend_origin'] ) {
 			add_settings_error( self::OPTION, 'invalid_origin', __( 'Enter a complete public website origin, such as https://www.example.com, without a path, query or credentials.', 'headless-bridge-for-rank-math' ) );
 		}
-		foreach ( array( 'seo', 'metadata', 'indexnow', 'editor_links', 'cms_noindex', 'suppress_mail' ) as $module ) {
+		foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'cms_noindex', 'suppress_mail' ) as $module ) {
 			$output[ $module ] = isset( $input[ $module ] ) && in_array( $input[ $module ], array( true, 1, '1' ), true );
 		}
 		if ( '' === $output['frontend_origin'] || $output['frontend_origin'] === UrlMapper::origin( home_url() ) ) {
-			foreach ( array( 'seo', 'metadata', 'indexnow', 'editor_links', 'cms_noindex' ) as $module ) {
+			foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'cms_noindex' ) as $module ) {
 				$output[ $module ] = false;
 			}
 			if ( '' !== $output['frontend_origin'] ) {
@@ -73,10 +74,10 @@ final class Settings {
 			add_settings_error( self::OPTION, 'indexnow_https', __( 'IndexNow requires an HTTPS public website on the standard port.', 'headless-bridge-for-rank-math' ) );
 		}
 		if ( ! get_option( 'permalink_structure' ) ) {
-			$requested = $output['metadata'] || $output['indexnow'] || $output['editor_links'];
-			$output['metadata'] = $output['indexnow'] = $output['editor_links'] = false;
+			$requested = $output['metadata'] || $output['graphql'] || $output['indexnow'] || $output['editor_links'];
+			$output['metadata'] = $output['graphql'] = $output['indexnow'] = $output['editor_links'] = false;
 			if ( $requested ) {
-				add_settings_error( self::OPTION, 'pretty_permalinks', __( 'Version 0.1.0 requires pretty WordPress permalinks for the SEO endpoint, IndexNow and editor link mapping. Configure them before enabling these modules.', 'headless-bridge-for-rank-math' ) );
+				add_settings_error( self::OPTION, 'pretty_permalinks', __( 'Pretty WordPress permalinks are required for REST and GraphQL metadata, IndexNow and editor link mapping. Configure them before enabling these modules.', 'headless-bridge-for-rank-math' ) );
 			}
 		}
 		$types = isset( $input['public_post_types'] ) && is_array( $input['public_post_types'] ) ? $input['public_post_types'] : array();
@@ -129,7 +130,8 @@ final class Settings {
 		echo '<table class="form-table"><tr><th><label for="hb-origin">' . esc_html__( 'Public website address', 'headless-bridge-for-rank-math' ) . '</label></th><td><input type="url" class="regular-text" id="hb-origin" name="' . esc_attr( self::OPTION ) . '[frontend_origin]" value="' . esc_attr( $config['frontend_origin'] ) . '" placeholder="https://www.example.com"><p class="description">' . esc_html__( 'Use the public origin only. Your CMS and media addresses stay unchanged.', 'headless-bridge-for-rank-math' ) . '</p></td></tr>';
 		$modules = array(
 			'seo' => array( 'Correct Rank Math schema addresses', 'Use the public website address for structured data, preserving CMS-hosted media.' ),
-			'metadata' => array( 'Published-page SEO endpoint', 'Provide normalized Rank Math metadata for allowed, published content. The frontend must render it. Enable Rank Math REST API support first.' ),
+			'metadata' => array( 'Published-page SEO endpoint', 'Provide normalized Rank Math metadata for allowed, published content. The frontend must render it. Enable Rank Math Headless CMS Support first.' ),
+			'graphql' => array( 'SEO through WPGraphQL', 'Add headlessSeo to content queries. Requires WPGraphQL and Rank Math Headless CMS Support; the REST metadata module can stay disabled.' ),
 			'indexnow' => array( 'IndexNow frontend adapter', 'Send Rank Math change notifications for the public website. Deploy the verification key file on the frontend before enabling.' ),
 			'editor_links' => array( 'Public View links in the editor', 'Open published content on the frontend. Authenticated preview links remain with your current preview provider.' ),
 			'cms_noindex' => array( 'Keep the CMS out of search results', 'Adds noindex to CMS responses. During public metadata generation, bypasses only the CMS-wide indexing flag and keeps page-level robots choices.' ),
@@ -149,6 +151,7 @@ final class Settings {
 		submit_button();
 		echo '</form><h2>' . esc_html__( 'Setup status', 'headless-bridge-for-rank-math' ) . '</h2><ul>';
 		echo '<li>' . esc_html( class_exists( '\RankMath\Helper' ) ? 'Rank Math detected.' : 'Rank Math is not loaded. SEO and IndexNow require it.' ) . '</li>';
+		echo '<li>' . esc_html( function_exists( 'register_graphql_field' ) ? 'WPGraphQL detected.' : 'WPGraphQL is not loaded. Only the optional GraphQL module requires it.' ) . '</li>';
 		echo '<li>' . esc_html( UrlMapper::is_configured() ? 'A separate public frontend is configured.' : 'Configure a separate public frontend before enabling bridge modules.' ) . '</li>';
 		echo '<li>' . esc_html( get_option( 'permalink_structure' ) ? 'Pretty permalinks are configured.' : 'This version requires pretty permalinks for content URL mapping.' ) . '</li>';
 		echo '<li>' . esc_html__( 'Frontend key-file reachability and rendering are checked separately during deployment; this page does not claim they are working.', 'headless-bridge-for-rank-math' ) . '</li></ul>';
@@ -159,6 +162,6 @@ final class Settings {
 				echo '<p>' . esc_html__( 'The file must contain exactly the current Rank Math key. Rotate the frontend file whenever this key changes.', 'headless-bridge-for-rank-math' ) . '</p>';
 			}
 		}
-		echo '<p>' . esc_html__( 'Version 0.1.0 is an initial release candidate. Test migration on staging before replacing existing helpers.', 'headless-bridge-for-rank-math' ) . '</p></div>';
+		echo '<p>' . esc_html__( 'This is alpha software. Test migration on staging before replacing existing helpers.', 'headless-bridge-for-rank-math' ) . '</p></div>';
 	}
 }

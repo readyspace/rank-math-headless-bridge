@@ -8,7 +8,7 @@ Set the public frontend origin to an absolute HTTP(S) origin such as `https://ww
 
 Select only public post types that your frontend actually serves. The metadata endpoint and published editor links also require a published, publicly readable, password-free post. The default mapping retains each WordPress permalink's path and removes a CMS home subdirectory when present.
 
-Version 0.1.0 requires pretty WordPress permalinks for metadata, IndexNow, and published editor links. Plain query-string permalinks are not supported by those modules; configure and test a suitable permalink layout before enabling them.
+The bridge requires pretty WordPress permalinks for REST/GraphQL metadata, IndexNow, and published editor links. Plain query-string permalinks are not supported by those modules; configure and test a suitable permalink layout before enabling them.
 
 Enable modules separately. Rank Math metadata and schema integrations depend on Rank Math being active; a missing provider should be treated as a setup error rather than replaced with fabricated SEO output.
 

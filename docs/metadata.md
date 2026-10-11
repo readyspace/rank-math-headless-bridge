@@ -12,6 +12,10 @@ This public read-only endpoint is limited to published, publicly readable, passw
 
 Rank Math remains the metadata provider. Its [native headless API](https://rankmath.com/kb/headless-cms-support/) returns head HTML; the bridge extracts supported fields into JSON for explicit rendering.
 
+The optional [WPGraphQL module](graphql.md) exposes the same provider through
+`ContentNode.headlessSeo`. Enable REST, GraphQL or both as needed. See the
+[App Router adapter](../examples/nextjs/app-router/README.md) for modern Next.js rendering.
+
 ## Successful response
 
 ```json

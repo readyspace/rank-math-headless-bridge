@@ -46,7 +46,7 @@ function expect( $actual, $expected, $label ) {
 		exit( 1 );
 	}
 }
-foreach ( array( 'seo', 'metadata', 'indexnow', 'editor_links', 'cms_noindex', 'suppress_mail' ) as $module ) {
+foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'cms_noindex', 'suppress_mail' ) as $module ) {
 	expect( Settings::enabled( $module ), false, 'No activation side effects: ' . $module );
 }
 expect( Settings::clean_origin( 'https://EXAMPLE.com:443/' ), 'https://example.com', 'Normalize default port and case' );
@@ -107,7 +107,7 @@ expect( Safeguards::mail( true, array() ), true, 'Respect existing mail provider
 $GLOBALS['filters']['headless_bridge/allow_cms_mail'] = function () { return true; };
 expect( Safeguards::mail( null, array() ), null, 'Explicit per-call mail opt-in' );
 $GLOBALS['options']['permalink_structure'] = '';
-$plain = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'metadata' => '1', 'editor_links' => '1' ) );
-expect( $plain['metadata'] || $plain['indexnow'] || $plain['editor_links'], false, 'Unsupported plain permalinks diagnosed and modules disabled' );
+$plain = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'metadata' => '1', 'graphql' => '1', 'editor_links' => '1' ) );
+expect( $plain['metadata'] || $plain['graphql'] || $plain['indexnow'] || $plain['editor_links'], false, 'Unsupported plain permalinks diagnosed and modules disabled' );
 expect( in_array( 'pretty_permalinks', $GLOBALS['errors'], true ), true, 'Administrator receives permalink explanation' );
 echo 'PASS: ' . $checks . " mapping/settings/editor/safeguard assertions\n";

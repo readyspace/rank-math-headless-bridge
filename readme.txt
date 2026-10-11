@@ -1,8 +1,8 @@
 === Headless Bridge for Rank Math ===
 Tags: headless, rank-math, seo, indexnow, nextjs
-Requires at least: 6.5
+Requires at least: 6.7
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.2.0-alpha.1
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,7 +14,9 @@ Use one configurable plugin version across different headless WordPress sites ra
 
 Features include Rank Math structured-data URL mapping, a normalized public-post metadata endpoint, an IndexNow frontend adapter, published editor links, optional CMS noindex directives, and optional WordPress mail suppression.
 
-Version 0.1.0 is an alpha intended for staging tests and community review. The plugin is an independent, unofficial integration. It does not bundle Rank Math, deploy a frontend, replace authenticated preview providers, migrate existing helpers automatically, or guarantee indexing.
+Version 0.2.0-alpha.1 is an alpha intended for staging tests and community review. The plugin is an independent, unofficial integration. It does not bundle Rank Math, deploy a frontend, replace authenticated preview providers, migrate existing helpers automatically, or guarantee indexing.
+
+The optional WPGraphQL module adds headlessSeo to public content nodes. Next.js App Router examples support the complete REST or GraphQL response. The module requires WPGraphQL installed separately, and works with the bridge REST module disabled.
 
 Rank Math's Headless CMS Support must be enabled and PHP DOM must be available for the metadata endpoint. The frontend must render that data in its page HTML. IndexNow requires deploying the current Rank Math verification key on the public frontend host.
 
@@ -51,6 +53,10 @@ No. It means the submission was received. Search engines decide whether and when
 Use the staging migration guide first. Must-use plugins cannot be deactivated in the usual Plugins screen. Keep recoverable backups and move replaced helpers outside the must-use plugin directory only after validating the replacement.
 
 == Changelog ==
+
+= 0.2.0-alpha.1 =
+
+Optional WPGraphQL metadata, shared provider, App Router examples, query-context isolation fixes and real WordPress/Next.js integration checks.
 
 = 0.1.0 =
 

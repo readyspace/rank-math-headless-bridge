@@ -149,6 +149,8 @@ check( 'https://cms.example.com/wp/key.txt' === RankMath::indexnow_key_location(
 $request = new WP_REST_Request( 'GET', '/headless-bridge/v1/head' );
 $request->set_param( 'post_id', 1 );
 $GLOBALS['wp_query'] = (object) [ 'marker' => 'original' ];
+$original_query_reference = $GLOBALS['wp_query'];
+$GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
 add_action( 'wp', static function () {} );
 add_action( 'parse_request', static function () {} );
 $_GET = [ 'post_id' => '1', 'p' => '999', 'preview' => 'true' ];
@@ -169,6 +171,7 @@ foreach ( [ 'normal', 'mismatch', 'throw', 'unavailable', 'shortcircuit' ] as $m
 	check( [ $_GET, $_POST, $_REQUEST, $_SERVER['REQUEST_URI'], $_SERVER['PATH_INFO'], $_SERVER['QUERY_STRING'], ob_get_level() ] === $outer, 'All input and output-buffer context is restored.' );
 	check( ! Metadata::is_frontend_request() && 0 === get_option( 'blog_public' ), 'Frontend scope and CMS-wide indexing policy are restored.' );
 	check( 'original' === $GLOBALS['wp_query']->marker, 'The original WordPress query is restored.' );
+	check( $GLOBALS['wp_query'] === $original_query_reference && $GLOBALS['wp_query'] === $GLOBALS['wp_the_query'], 'Original object identity and main-query aliases survive generation.' );
 	check( ! isset( $GLOBALS['wp_filter']['test_added_inside_native'] ), 'Native hook additions do not leak into the REST caller.' );
 	check( ! empty( $GLOBALS['wp_filter']['wp']->callbacks ) && ! empty( $GLOBALS['wp_filter']['parse_request']->callbacks ), 'Native removed hooks are restored.' );
 }
