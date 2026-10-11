@@ -16,6 +16,22 @@ automatically, and every bridge feature starts turned off.
 **Version: 0.2.0-alpha.1.** This is an early version for testing on a copy of your
 site. See [what has been tested](docs/validation.md) before using it on a live site.
 
+## What is Rank Math?
+
+Rank Math is an SEO plugin for WordPress. It helps you set the titles and short
+descriptions search engines use, choose which pages can appear in search results,
+and add structured information about your content. It also helps prepare the
+previews people see when they share a link.
+
+You manage these settings in WordPress with Rank Math. This bridge helps your
+separate Next.js website use the SEO data that Rank Math creates. Install Rank
+Math separately before setting up the bridge.
+
+[Explore Rank Math (affiliate link)](https://rankmath.com/?ref=super%20salesman)
+
+**Affiliate disclosure:** This is an affiliate link. If you make a qualifying
+purchase through it, this project's owner may earn a commission.
+
 ## How it works
 
 1. **WordPress** stores your posts and pages.
