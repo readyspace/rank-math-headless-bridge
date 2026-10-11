@@ -16,6 +16,10 @@ Write and edit in WordPress. Let visitors read your Next.js website. This bridge
 
 Rank Math is a WordPress SEO plugin. You use it to set how your pages appear in search results and when people share links. Install Rank Math separately; its code is not included in this bridge.
 
+[Explore Rank Math (affiliate link)](https://rankmath.com/?ref=super%20salesman)
+
+Affiliate disclosure: If you make a qualifying purchase through this link, this project's owner may earn a commission. A paid Rank Math plan is not required to use this bridge.
+
 Our main Next.js setup uses WPGraphQL to ask for content and SEO together. WPGraphQL remains optional for the WordPress plugin. Developers using REST can enable the separate public-post SEO endpoint. The plugin does not switch APIs automatically. All bridge features start off.
 
 Other optional features fix supported SEO page addresses, adapt Rank Math's IndexNow notices, open published View links on the public website, add CMS noindex instructions or stop WordPress email.
@@ -30,9 +34,14 @@ IndexNow needs a current verification key file on the public website. A submissi
 
 This project is open source under GPL-3.0-or-later. Thank you to the Rank Math team and contributors for Rank Math SEO and its headless support, which make this bridge possible. This is an independent community project; these credits do not claim Rank Math's approval or support. Rank Math's code is not bundled here.
 
-Rank Math: https://rankmath.com/
 Official Rank Math source: https://github.com/rankmath/seo-by-rank-math
 Headless CMS guide: https://rankmath.com/kb/headless-cms-support/
+
+= About ReadySpace =
+
+ReadySpace provides cloud and hosting services for businesses. ReadySpace and community contributors develop and share this free, open-source bridge. You can use it with your chosen hosting provider; a ReadySpace account is not required.
+
+[Learn about ReadySpace](https://readyspace.com)
 
 Start with the [beginner setup guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/quick-start.md). Read the [tests and limits](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/validation.md) before using it on a live site. Setup guides and Next.js examples are available on GitHub; they are not included in the WordPress ZIP. The ZIP includes the plugin, licence, changelog and credits.
 

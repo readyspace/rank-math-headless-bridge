@@ -5,7 +5,9 @@
 The installable `headless-bridge-for-rank-math-0.2.0.zip` contains 13 files:
 nine runtime PHP files, `readme.txt`, `LICENSE`, `CHANGELOG.md` and `credits.txt`.
 Every archived file was compared with its source. Tests, examples, development
-dependencies, build caches and the GitHub affiliate README are excluded.
+dependencies, build caches and the GitHub README are excluded. The packaged
+`readme.txt` includes the disclosed Rank Math affiliate link and ReadySpace
+introduction used in the proposed directory description.
 
 Official Plugin Check **2.1.0** ran all **29 non-experimental static checks**
 against the installed ZIP on WordPress **7.1.3**, PHP **8.3.33**:
@@ -38,10 +40,16 @@ Check on native PHP 8.3. The native Plugin Check job reported no errors. It runs
 static checks; real-provider runtime tests remain separate.
 
 The [WordPress.org readme validator](https://wordpress.org/plugins/developers/readme-validator/)
-checked the public preparation branch's `readme.txt`. It reported no errors or
+checked the final packaged `readme.txt`. It reported no errors or
 warnings, only notes about optional Upgrade Notice, Screenshots and donation
 sections. Contributor `readyspace` and stable tag `0.2.0` appeared in the
 validated readme. Directory submission and approval have not taken place.
+
+After adding the ReadySpace introduction, author website and disclosed Rank Math
+affiliate link, the ZIP was rebuilt and all 29 static checks passed again with
+zero errors and warnings. The saved report's SHA-256 identifies that updated
+ZIP. The final readme was also validated again; the same optional notes remain.
+These changes affect documentation and the author header, not plugin behavior.
 
 ## Earlier alpha validation
 

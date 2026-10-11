@@ -7,7 +7,7 @@
  * Requires at least: 6.7
  * Requires PHP: 7.4
  * Author: ReadySpace contributors
- * Author URI: https://profiles.wordpress.org/readyspace/
+ * Author URI: https://readyspace.com
  * License: GPL-3.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: headless-bridge-for-rank-math

@@ -34,6 +34,8 @@
     "wp_functions_compatibility",
     "ai_provider"
   ],
+  "package": "headless-bridge-for-rank-math-0.2.0.zip",
+  "packageSha256": "1f0a66df73e3d9dbb3a56e4b7923842e9d1d2300eb00c45c8c172df58f97b285",
   "errorCount": 0,
   "warningCount": 0,
   "results": {
@@ -211,7 +213,5 @@
       "errors": [],
       "warnings": []
     }
-  },
-  "package": "headless-bridge-for-rank-math-0.2.0.zip",
-  "packageSha256": "007d57c45591b8e299662a31a6e9d163f614ff25463c6d025cea51925023ab40"
+  }
 }

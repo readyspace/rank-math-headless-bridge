@@ -32,6 +32,25 @@ Thank you for helping make headless WordPress SEO easier to configure and mainta
 
 ## Development
 
+### Maintainer workflow with GitHub Desktop
+
+Start in GitHub Desktop and select this repository. Use **Fetch origin** and,
+when offered, **Pull origin** to get the latest changes. Select or create the
+working branch in Desktop before editing files. Open the local checkout with
+**Open in your editor** and run the checks appropriate to your change.
+
+Return to Desktop's **Changes** tab to review the files. Write a clear summary,
+commit the intended files, then use **Push origin** to send that commit to
+GitHub. A push to a branch with an open pull request updates that same request.
+For a new branch, use Desktop's **Create Pull Request** action to open the
+review page on GitHub. Review and merge there after the checks pass.
+
+For assisted maintainer work in this repository, use GitHub Desktop for branch,
+commit and push actions. Local editing, packaging, tests and read-only checks can
+use the development tools below. WordPress.org submission and SVN publication
+are separate steps; pushing to GitHub does not publish the plugin directory
+release.
+
 Clone the repository into a local WordPress development environment. Use the folder name `headless-bridge-for-rank-math`. Install Rank Math separately; this repository does not bundle its code.
 
 The current compatibility target is WordPress 6.7 or newer and PHP 7.4 or newer, matching the current Rank Math minimum. Run the checks documented in the repository's CI workflow before opening a pull request. For a change to a WordPress hook, add a focused test of its observable behavior and test it in a disposable WordPress installation. Pure unit tests do not establish full Rank Math compatibility.

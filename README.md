@@ -34,6 +34,13 @@ Math separately before setting up the bridge.
 **Affiliate disclosure:** This is an affiliate link. If you make a qualifying
 purchase through it, this project's owner may earn a commission.
 
+## About ReadySpace
+
+[ReadySpace](https://readyspace.com) provides cloud and hosting services for
+businesses. ReadySpace and community contributors develop and share this free,
+open-source bridge. You can use it with your chosen hosting provider; a
+ReadySpace account is not required.
+
 ## How it works
 
 1. **WordPress** stores your posts and pages.

@@ -25,8 +25,9 @@ They provide the CMS, APIs, frontend tools and test environment we build on.
 
 ## This project
 
-Thank you to ReadySpace and the bridge's contributors for developing and sharing
-this integration. The [commit history](https://github.com/readyspace/rank-math-headless-bridge/graphs/contributors)
+[ReadySpace](https://readyspace.com) provides cloud and hosting services for
+businesses. Thank you to ReadySpace and the bridge's contributors for developing
+and sharing this free, open-source integration. The [commit history](https://github.com/readyspace/rank-math-headless-bridge/graphs/contributors)
 records contributions.
 
 Original bridge code is released under [GPL-3.0-or-later](LICENSE). Contributions

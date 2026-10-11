@@ -50,8 +50,9 @@ Suggested explanation for the reviewer:
   [saved report](plugin-check-report.json) lists every check. No check or result
   code was excluded; optional AI analysis was not enabled. Static checks are
   separate from runtime tests and do not mean WordPress.org approval.
-- [x] The official online readme validator checked the public preparation
-  branch's `readme.txt`: **no errors and no warnings**. Its only notes concern
+- [x] The official online readme validator checked the final packaged
+  `readme.txt`, including the affiliate disclosure and ReadySpace introduction:
+  **no errors and no warnings**. Its only notes concern
   optional sections: Upgrade Notice, Screenshots and a donate link. These
   optional notes do not block submission.
 - [x] The prepared ZIP installed and activated on disposable WordPress 6.7.10
@@ -75,7 +76,7 @@ Suggested explanation for the reviewer:
   project. WordPress.org still decides whether the name and slug are acceptable.
 - [x] The lean ZIP contains 13 files: nine runtime PHP files, `readme.txt`,
   `LICENSE`, `CHANGELOG.md` and `credits.txt`. Every archived file matches its
-  source. Tests, cached builds, development dependencies and the affiliate README
+  source. Tests, cached builds, development dependencies and the GitHub README
   are excluded. Guides and Next.js examples stay on GitHub. The plugin folder
   matches the proposed slug `headless-bridge-for-rank-math`.
 
@@ -129,8 +130,21 @@ receiving service can see the server's IP address. IndexNow's
 [terms page](https://www.indexnow.org/terms) includes its website privacy section;
 it does not replace each participating search engine's own policy.
 
-The directory readme links directly to Rank Math's normal website and setup
-guides. The disclosed affiliate link remains in the GitHub README, as requested.
+The directory description and GitHub README both contain one directly linked,
+clearly disclosed Rank Math affiliate link:
+`https://rankmath.com/?ref=super%20salesman`. The disclosure explains that a
+qualifying purchase may earn the project's owner a commission. A paid Rank Math
+plan is not required to use the bridge. Rank Math is the required SEO provider,
+so the link appears next to its introduction rather than as repeated promotion.
+WordPress.org's [readme rule](https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/#12-public-facing-pages-on-wordpress-org-readmes-must-not-spam)
+allows moderate links to required products and requires direct affiliate links
+with disclosure. The review team decides whether the final listing is acceptable.
+
+The description also introduces ReadySpace as the project's developer and links
+to `https://readyspace.com`. The plugin's Author URI points to the same website.
+The contributor account remains `readyspace`. Using ReadySpace hosting or opening
+a ReadySpace account is not required.
+
 This plugin does not place affiliate links or credit links on visitors' pages.
 Rank Math is credited as the SEO provider. The bridge is an independent project
 and does not claim Rank Math's endorsement.
