@@ -57,4 +57,40 @@ jobs:
         env:
           BRIDGE_TEST_WP: ${{ matrix.wordpress }}
           BRIDGE_TEST_PHP: '8.3'
-          BRIDGE_TEST_PACKAGE: dist/rank-math-headless-bridge-0.2.0-alpha.1.zip
+          BRIDGE_TEST_PACKAGE: dist/headless-bridge-for-rank-math-0.2.0.zip
+  wordpress-directory-check:
+    runs-on: ubuntu-24.04
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: bridge-test-only
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --password=bridge-test-only"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli, dom
+          tools: wp-cli
+          coverage: none
+      - name: Build submission ZIP
+        run: python3 scripts/package.py
+      - name: Install disposable WordPress and official Plugin Check
+        run: |
+          wp core download --path=/tmp/bridge-directory-site
+          wp config create --path=/tmp/bridge-directory-site --dbname=wordpress --dbuser=root --dbpass=bridge-test-only --dbhost=127.0.0.1
+          wp core install --path=/tmp/bridge-directory-site --url=http://127.0.0.1:8090 --title="Bridge directory test" --admin_user=reviewer --admin_password=bridge-test-only --admin_email=reviewer@example.test --skip-email
+          wp plugin install "$GITHUB_WORKSPACE/dist/headless-bridge-for-rank-math-0.2.0.zip" --activate --path=/tmp/bridge-directory-site
+          wp plugin install plugin-check --activate --path=/tmp/bridge-directory-site
+      - name: Check actual packaged plugin for WordPress.org
+        run: wp plugin check headless-bridge-for-rank-math --slug=headless-bridge-for-rank-math --format=json --path=/tmp/bridge-directory-site

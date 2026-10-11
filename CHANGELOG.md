@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 — Prepared first public release
+
+- Package under `headless-bridge-for-rank-math`, matching the text domain and avoiding a third-party brand at the start of the directory slug.
+- Include only runtime PHP, readme, license, changelog and credits in the WordPress ZIP; keep setup guides and Next.js examples on GitHub.
+- Add WordPress.org listing details for contributor `readyspace`, feature limits, independent Rank Math credits and opt-in IndexNow service disclosure.
+- Make settings and API messages translatable; keep the legacy-helper warning on the bridge settings page.
+- Remove only the bridge's settings on uninstall, preserving Rank Math settings and site content.
+- Add official Plugin Check validation of the ZIP and uninstall integration checks.
+
 ## 0.2.0-alpha.1
 
 - Lead Next.js setup and examples with WPGraphQL while keeping it optional at the plugin level; explain REST as a separate choice without automatic fallback.

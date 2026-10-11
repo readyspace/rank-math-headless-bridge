@@ -1,0 +1,217 @@
+{
+  "pluginCheck": "2.1.0",
+  "wordpress": "7.1.3",
+  "php": "8.3.33",
+  "scope": "All non-experimental static checks; runtime integration is tested separately.",
+  "checks": [
+    "i18n_usage",
+    "php_error_reporting",
+    "code_obfuscation",
+    "plugin_content",
+    "file_type",
+    "plugin_header_fields",
+    "late_escaping",
+    "safe_redirect",
+    "plugin_updater",
+    "plugin_uninstall",
+    "plugin_review_phpcs",
+    "direct_db_queries",
+    "performant_wp_query_params",
+    "enqueued_scripts_in_footer",
+    "enqueued_resources",
+    "plugin_readme",
+    "localhost",
+    "no_unfiltered_uploads",
+    "trademarks",
+    "offloading_files",
+    "write_file",
+    "setting_sanitization",
+    "prefixing",
+    "direct_db",
+    "minified_files",
+    "direct_file_access",
+    "external_admin_menu_links",
+    "wp_functions_compatibility",
+    "ai_provider"
+  ],
+  "errorCount": 0,
+  "warningCount": 0,
+  "results": {
+    "i18n_usage": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "php_error_reporting": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "code_obfuscation": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "plugin_content": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "file_type": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "plugin_header_fields": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "late_escaping": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "safe_redirect": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "plugin_updater": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "plugin_uninstall": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "plugin_review_phpcs": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "direct_db_queries": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "performant_wp_query_params": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "enqueued_scripts_in_footer": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "enqueued_resources": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "plugin_readme": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "localhost": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "no_unfiltered_uploads": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "trademarks": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "offloading_files": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "write_file": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "setting_sanitization": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "prefixing": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "direct_db": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "minified_files": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "direct_file_access": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "external_admin_menu_links": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "wp_functions_compatibility": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "ai_provider": {
+      "errorCount": 0,
+      "warningCount": 0,
+      "errors": [],
+      "warnings": []
+    }
+  },
+  "package": "headless-bridge-for-rank-math-0.2.0.zip",
+  "packageSha256": "007d57c45591b8e299662a31a6e9d163f614ff25463c6d025cea51925023ab40"
+}

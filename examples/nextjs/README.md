@@ -8,6 +8,10 @@ These files are examples for an existing Next.js app. The plugin does not copy
 frontend files, build a site or deploy it for you. If you are setting up WordPress
 first, use the [start guide](../../docs/quick-start.md).
 
+Download or copy these examples from this GitHub repository. They are not
+included in the lean WordPress plugin ZIP. Test the connection on staging before
+changing your live frontend.
+
 ## Pick your path
 
 | Your project | Guide |

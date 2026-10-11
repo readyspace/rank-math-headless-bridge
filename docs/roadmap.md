@@ -1,6 +1,6 @@
 # What we plan to build next
 
-## Available in this alpha
+## Prepared for version 0.2.0
 
 - WPGraphQL is the main Next.js integration, but optional for the WordPress plugin.
 - REST remains a separate alternative. There is no automatic API fallback.
@@ -9,8 +9,9 @@
 - App Router examples render search tags, sharing tags and schema on the server.
 - Tests use real WordPress, Rank Math and WPGraphQL, plus a Next.js production build.
 
-See [test results and limits](validation.md). This alpha still needs reports from
-real staging sites. It is not a complete migration or every Rank Math feature.
+See [test results and limits](validation.md). Test your own staging site before
+changing a live website. This release does not cover every Rank Math feature or
+automatically migrate an existing frontend.
 
 ## Next: keep saved pages fresh
 
@@ -39,12 +40,15 @@ HTTP status, not only display a different page. Start with exact-match redirects
 Optional 404 reports could tell WordPress when a public page is missing. Plan
 sender verification, limits on reports, minimal stored data and a retention period.
 
-## Before a stable public release
+## WordPress.org publication
 
-Run WordPress Plugin Check, verify dependencies and ZIP installation, and record
-the versions and Pro features actually supported. Confirm an independent
-WordPress.org slug and matching text domain.
+Version 0.2.0 is prepared for the first public release. The proposed directory
+slug and text domain are `headless-bridge-for-rank-math`. The
+[submission guide](wordpress-org-submission.md) tracks final package checks,
+WordPress.org review and publication. The plugin is not listed merely because
+its changes are merged on GitHub.
 
 Test multisite, multilingual paths, WooCommerce and authenticated previews before
-claiming support. Gather staging feedback. Publishing to WordPress.org and
+claiming support for those setups. Keep collecting staging feedback and record
+the versions and Pro features actually tested. Publishing to WordPress.org and
 changing live websites are separate steps.

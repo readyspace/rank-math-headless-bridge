@@ -1,4 +1,5 @@
 <?php
+function __( $text, $domain = '' ) { return $text; }
 /** Standalone regression tests; no WordPress, network or database required. */
 define( 'ABSPATH', '/test-wordpress/' );
 

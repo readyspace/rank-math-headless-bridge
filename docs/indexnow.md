@@ -57,6 +57,6 @@ allow the public key file. The route does not fetch files from WordPress.
 | Key URL opens a homepage or login | Check Next.js routes, redirects, middleware and access rules. |
 
 Rank Math's **Check Key** action should open the public key-file address while
-the adapter is on. Inspect the actual response and history on staging. The alpha's
+the adapter is on. Inspect the actual response and history on staging. The recorded
 current tests do not establish real IndexNow delivery for every installation.
 See the [IndexNow protocol](https://www.indexnow.org/documentation) for the full rules.

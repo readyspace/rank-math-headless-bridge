@@ -4,6 +4,34 @@ A helper plugin is small custom code added to do a specific job. This bridge can
 replace some helpers, but it does not remove or migrate them automatically.
 Test one job at a time on a staging copy of your site.
 
+## Upgrading an older bridge ZIP
+
+The first ZIP installed into `wp-content/plugins/rank-math-headless-bridge/`.
+The prepared directory release installs into
+`wp-content/plugins/headless-bridge-for-rank-math/`. WordPress treats these as
+two separate plugin folders, even though the display name is the same.
+
+1. Back up your WordPress database and old bridge files. Also write down the
+   public website address, selected content types and enabled bridge features.
+2. Deactivate the old bridge in **Plugins**. Deactivation keeps its settings.
+3. Use your host's file manager or ask your developer to copy the old
+   `rank-math-headless-bridge` folder to a backup location outside
+   `wp-content/plugins/`, then remove only that old folder from the plugins
+   directory. This removes the old code without running a plugin deletion task.
+4. Upload `headless-bridge-for-rank-math-0.2.0.zip` and activate the new bridge.
+5. Open **Settings → Headless Bridge** and check your saved choices. Repeat the
+   published-page SEO checks below before changing the live site.
+
+Never activate both copies. The saved setting name `headless_bridge_settings`
+and the SEO APIs remain the same, so the folder change can keep the existing
+settings. Keep your backup until you have checked the result.
+
+Deleting the new directory version through WordPress runs its uninstaller and
+removes the bridge's own settings. It leaves Rank Math settings and content
+alone. To pause the new version and keep settings, deactivate it instead.
+
+The sections below cover other helpers you may also be replacing.
+
 ## 1. Write down what you have
 
 Ask your developer to list normal plugins and must-use plugins, their file paths

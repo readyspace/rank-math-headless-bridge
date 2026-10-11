@@ -1,24 +1,30 @@
 === Headless Bridge for Rank Math ===
-Tags: headless, rank-math, seo, indexnow, nextjs
+Contributors: readyspace
+Tags: headless, seo, graphql, nextjs, indexnow
 Requires at least: 6.7
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.0-alpha.1
+Stable tag: 0.2.0
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Bring Rank Math SEO from WordPress to a separate Next.js site. WPGraphQL is the main example; REST is an optional alternative.
+Use Rank Math SEO on a separate Next.js website. Optional WPGraphQL support, a REST alternative and guides for headless WordPress.
 
 == Description ==
 
 Write and edit in WordPress. Let visitors read your Next.js website. This bridge helps Next.js use the SEO title, description, search instructions, sharing tags and schema created by Rank Math.
 
+Rank Math is a WordPress SEO plugin. You use it to set how your pages appear in search results and when people share links. Install Rank Math separately; its code is not included in this bridge.
+
 Our main Next.js setup uses WPGraphQL to ask for content and SEO together. WPGraphQL remains optional for the WordPress plugin. Developers using REST can enable the separate public-post SEO endpoint. The plugin does not switch APIs automatically. All bridge features start off.
 
 Other optional features fix supported SEO page addresses, adapt Rank Math's IndexNow notices, open published View links on the public website, add CMS noindex instructions or stop WordPress email.
 
-Version 0.2.0-alpha.1 is an early version for staging tests and community feedback. It does not cover every Rank Math feature. The frontend examples must be added to your Next.js app; the plugin does not build or deploy that app.
+Test the bridge on a copy of your site before changing a live site. It does not cover every Rank Math feature. The frontend examples must be added to your Next.js app; the plugin does not build or deploy that app.
 
-Rank Math must be installed separately. Enable its Headless CMS Support and ensure PHP DOM is available for either SEO API. Drafts, private posts and password-protected posts do not receive public bridge SEO.
+For either SEO API, install and activate Rank Math, enable its Headless CMS Support and make sure PHP DOM is available. Ask your host about PHP DOM if needed. Drafts, private posts and password-protected posts do not receive public bridge SEO.
+
+The current version supports published posts, pages and selected public custom post types. Archive pages, sitemaps, redirects, 404 reporting and automatic Next.js cache updates are not included. See the validation guide for tested versions and remaining checks.
 
 IndexNow needs a current verification key file on the public website. A submission does not guarantee indexing. CMS noindex does not add a login or prevent access. Leave email suppression off if WordPress must send password resets or notices.
 
@@ -28,8 +34,30 @@ Rank Math: https://rankmath.com/
 Official Rank Math source: https://github.com/rankmath/seo-by-rank-math
 Headless CMS guide: https://rankmath.com/kb/headless-cms-support/
 
-The ZIP includes setup guides and CREDITS.md. Start with docs/quick-start.md. Source, contributions and updates:
-https://github.com/readyspace/rank-math-headless-bridge
+Start with the [beginner setup guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/quick-start.md). Read the [tests and limits](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/validation.md) before using it on a live site. Setup guides and Next.js examples are available on GitHub; they are not included in the WordPress ZIP. The ZIP includes the plugin, licence, changelog and credits.
+
+[Source code and contributions](https://github.com/readyspace/rank-math-headless-bridge)
+
+== External services and privacy ==
+
+= Optional IndexNow notifications =
+
+IndexNow tells participating search engines that public pages were added, changed or deleted. This feature is optional. The bridge's IndexNow frontend adapter starts off. It works with Rank Math's Instant Indexing module, which you must configure separately.
+
+When Rank Math sends an automatic or manual IndexNow notification, the bridge can change eligible page addresses to your public website. Rank Math makes the request to https://api.indexnow.org/indexnow/ and sends the public page URLs, website host, verification key and key-file address. Rank Math also sends its client information, including its version, whether the request was manual and a coded identifier based on your WordPress home address. The receiving server can see your WordPress server's IP address. IndexNow shares submitted URLs with participating search engines.
+
+This bridge does not send post bodies, passwords or visitor details to IndexNow. Only submit public URLs you want search engines to know about. A received notification does not guarantee indexing. Turning the bridge adapter off does not turn off Rank Math's own IndexNow module.
+
+* [IndexNow service](https://www.indexnow.org/)
+* [IndexNow protocol](https://www.indexnow.org/documentation)
+* [IndexNow terms and website privacy information](https://www.indexnow.org/terms)
+* [Rank Math IndexNow setup](https://rankmath.com/kb/how-to-use-indexnow/)
+
+IndexNow's website privacy section describes its website, not every participating search engine's data handling. Check the policies of the search engines and hosting services you choose.
+
+= SEO APIs =
+
+The bridge generates SEO inside your WordPress site. Its REST route and optional WPGraphQL field let your frontend request SEO for eligible public content. They do not contact a bridge vendor service. Your Next.js app and hosting provider handle those requests according to your own setup. The bridge does not add analytics or collect usage reports.
 
 == Installation ==
 
@@ -38,8 +66,8 @@ https://github.com/readyspace/rank-math-headless-bridge
 3. Enable Rank Math Headless CMS Support and use readable WordPress permalinks.
 4. Open Settings -> Headless Bridge. Enter the public website address and select the public content types.
 5. For WPGraphQL, enable SEO through WPGraphQL and Correct Rank Math schema addresses. The REST endpoint can stay off.
-6. Follow docs/quick-start.md and the App Router guide to connect Next.js. Check the actual page source.
-7. Add other features one at a time. Use docs/migration.md when replacing older helpers.
+6. Follow the linked beginner setup guide and App Router guide to connect Next.js. Check the actual page source.
+7. Add other features one at a time. Follow the migration guide when replacing older helpers. Read the external-service notes before enabling IndexNow.
 
 == Frequently Asked Questions ==
 
@@ -55,11 +83,27 @@ No. It can combine content and SEO in one request. Query size, hosting and cachi
 
 No. Add the server-side frontend helpers too. The guides explain the steps.
 
+= Is this an official Rank Math plugin? =
+
+No. This is an independent open-source community project. Rank Math has not endorsed it or agreed to support it. Please report bridge issues to this project's maintainers.
+
+= Does the bridge need a paid account? =
+
+The bridge has no paid features, licence keys or required bridge account. Rank Math, WPGraphQL and your hosting services are separate projects with their own requirements.
+
 = Can I delete my old helper plugins? =
 
-First compare their behavior on staging. Keep backups and replace one job at a time. Must-use plugins cannot be turned off in the usual Plugins screen. See docs/migration.md.
+First compare their behavior on staging. Keep backups and replace one job at a time. Must-use plugins cannot be turned off in the usual Plugins screen. Follow the [migration guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md).
+
+= How do I upgrade an older bridge ZIP? =
+
+The directory package uses the folder headless-bridge-for-rank-math. Older ZIPs used rank-math-headless-bridge. Back up your settings and old files, deactivate the old bridge and follow the [folder-change guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md#upgrading-an-older-bridge-zip). Never activate both copies. Deactivation keeps settings; deleting the new plugin through WordPress removes only the bridge's own settings.
 
 == Changelog ==
+
+= 0.2.0 =
+
+Prepared first public release with directory documentation, external-service disclosure and packaging that matches the plugin slug. Optional WPGraphQL SEO supports published content; Next.js App Router examples are available on GitHub.
 
 = 0.2.0-alpha.1 =
 

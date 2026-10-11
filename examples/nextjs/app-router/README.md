@@ -7,6 +7,9 @@ as a separate choice below. There is no automatic switch between them.
 Use an existing Next.js App Router app with React 19. Set up WordPress first with
 [the start guide](../../../docs/quick-start.md).
 
+The example files live here on GitHub and are not included in the WordPress ZIP.
+Use a staging copy of your frontend for the first connection.
+
 ## 1. Copy the helpers
 
 For a project that uses a `src/` folder, copy these files into

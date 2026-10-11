@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, dirname, basename } from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const pluginPath = '/wordpress/wp-content/plugins/rank-math-headless-bridge';
+const pluginPath = '/wordpress/wp-content/plugins/headless-bridge-for-rank-math';
 const packageFile = process.env.BRIDGE_TEST_PACKAGE;
 const testPath = packageFile ? '/bridge-source' : pluginPath;
 const dependencies = process.env.BRIDGE_TEST_DEPENDENCIES;
@@ -31,7 +31,7 @@ const blueprint = {
     ...(packageFile ? [{ step: 'installPlugin', pluginData: { resource: 'vfs', path: `/bridge-package/${basename(packageFile)}` } }] : []),
     { step: 'activatePlugin', pluginPath: 'seo-by-rank-math/rank-math.php' },
     { step: 'activatePlugin', pluginPath: 'wp-graphql/wp-graphql.php' },
-    { step: 'activatePlugin', pluginPath: 'rank-math-headless-bridge/rank-math-headless-bridge.php' },
+    { step: 'activatePlugin', pluginPath: 'headless-bridge-for-rank-math/rank-math-headless-bridge.php' },
   ],
 };
 const site = await runCLI({ command: 'server', port: 0, workers: 1, php: blueprint.preferredVersions.php, wp: blueprint.preferredVersions.wp, 'site-url': 'https://cms.example.com', mount, blueprint });
@@ -55,6 +55,9 @@ try {
   const absent = await site.playground.run({ code: `<?php require '/wordpress/wp-load.php'; if (function_exists('graphql')) { throw new RuntimeException('WPGraphQL should be absent.'); } $post = get_page_by_path('bridge-alpha', OBJECT, 'post'); $data = HeadlessBridge\\Metadata::for_post($post->ID); if (is_wp_error($data) || $data['title'] !== 'Alpha custom SEO title') { throw new RuntimeException('REST provider failed without optional WPGraphQL.'); } echo 'Absent WPGraphQL dependency: passed.';` });
   if (absent.exitCode !== 0 || absent.errors) throw new Error(absent.errors || absent.text);
   console.log(absent.text);
+  const uninstall = await site.playground.run({ code: `<?php require '/wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; $rank_math = get_option('rank-math-options-general'); $post = get_page_by_path('bridge-alpha', OBJECT, 'post'); uninstall_plugin('headless-bridge-for-rank-math/rank-math-headless-bridge.php'); if (false !== get_option('headless_bridge_settings', false)) { throw new RuntimeException('Bridge settings remain after uninstall.'); } if ($rank_math !== get_option('rank-math-options-general') || !get_post($post->ID)) { throw new RuntimeException('Uninstall modified Rank Math settings or site content.'); } echo 'Uninstall removes only bridge settings: passed.';` });
+  if (uninstall.exitCode !== 0 || uninstall.errors) throw new Error(uninstall.errors || uninstall.text);
+  console.log(uninstall.text);
 } catch (error) {
   // PHP-wasm exceptions otherwise dump the response byte-by-byte.
   const response = error?.response;

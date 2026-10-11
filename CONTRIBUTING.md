@@ -1,8 +1,8 @@
 # Contributing
 
 Clone the full [GitHub repository](https://github.com/readyspace/rank-math-headless-bridge)
-before running the development commands below. The installable ZIP includes guides
-but does not include tests or development dependencies.
+before running the development commands below. The installable ZIP contains runtime
+files; guides, frontend examples, tests and development dependencies stay on GitHub.
 
 Run `php tests/run.php`, `php tests/metadata-test.php` (DOM required), and
 `node --test tests/frontend-example.test.mjs` before proposing a change.
@@ -14,8 +14,12 @@ creates a disposable Playground installation with real upstream plugins; it need
 network access on the first run. Set `BRIDGE_TEST_WP` and `BRIDGE_TEST_PHP` to
 choose versions. `BRIDGE_TEST_DEPENDENCIES` can point at a local directory
 containing extracted `seo-by-rank-math` and `wp-graphql` plugin folders.
-After packaging, set `BRIDGE_TEST_PACKAGE=dist/rank-math-headless-bridge-0.2.0-alpha.1.zip`
+After packaging, set `BRIDGE_TEST_PACKAGE=dist/headless-bridge-for-rank-math-0.2.0.zip`
 to install and test the ZIP instead of mounting the source as the active plugin.
+Run `npm run check:plugin` for the official Plugin Check static checks against that
+ZIP. The check uses a disposable WordPress site and installs the official checker;
+it does not enable its optional AI analysis. The native directory CI job also runs
+Plugin Check. Neither check publishes to WordPress.org.
 
 Thank you for helping make headless WordPress SEO easier to configure and maintain. This project is an independent integration with Rank Math, not a Rank Math product.
 
@@ -28,7 +32,7 @@ Thank you for helping make headless WordPress SEO easier to configure and mainta
 
 ## Development
 
-Clone the repository into a local WordPress development environment. Use the folder name `rank-math-headless-bridge`. Install Rank Math separately; this repository does not bundle its code.
+Clone the repository into a local WordPress development environment. Use the folder name `headless-bridge-for-rank-math`. Install Rank Math separately; this repository does not bundle its code.
 
 The current compatibility target is WordPress 6.7 or newer and PHP 7.4 or newer, matching the current Rank Math minimum. Run the checks documented in the repository's CI workflow before opening a pull request. For a change to a WordPress hook, add a focused test of its observable behavior and test it in a disposable WordPress installation. Pure unit tests do not establish full Rank Math compatibility.
 
