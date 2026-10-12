@@ -3,8 +3,9 @@
 This guide connects an existing WordPress site to an existing Next.js site.
 WordPress is where you edit. Next.js is the website visitors see.
 
-Use a test copy of your site first. Version 0.2.0 is prepared for the first public
-release; the WordPress.org listing still needs review. Someone who manages your
+Use a test copy of your site first. Version 0.2.1 has the distinctive ReadySpace
+name requested during WordPress.org review; the corrected ZIP still needs upload
+and review. Someone who manages your
 Next.js code must complete the frontend steps. You do not need to understand
 every line of code to follow the plan.
 
@@ -27,10 +28,11 @@ settings as they are; configure the public website in the bridge instead.
 1. Install and activate **Rank Math SEO**.
 2. Install and activate **WPGraphQL**.
 3. Upload the bridge ZIP through **Plugins → Add New Plugin → Upload Plugin**.
-4. Activate **Headless Bridge for Rank Math**.
+4. Activate **ReadySpace Headless SEO Bridge for Rank Math**.
 
-The prepared ZIP is named `headless-bridge-for-rank-math-0.2.0.zip`. Its installed
-folder is `headless-bridge-for-rank-math`. If you already installed an older bridge
+The prepared ZIP is named `readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip`.
+Its installed folder is `readyspace-headless-seo-bridge-for-rank-math`.
+If you already installed an older bridge
 ZIP, follow the [folder-change steps](migration.md#upgrading-an-older-bridge-zip)
 first. Do not activate two copies of the bridge.
 
@@ -48,7 +50,7 @@ Missing WPGraphQL does not cause an automatic switch to REST.
 2. Switch Rank Math to **Advanced Mode** if needed. Open
    **Rank Math SEO → General Settings → Others** and enable **Headless CMS Support**.
    [Rank Math's own guide](https://rankmath.com/kb/headless-cms-support/) shows this setting.
-3. Open **Settings → Headless Bridge**.
+3. Open **Settings → ReadySpace SEO Bridge**.
 4. Enter your **Public website address**, for example `https://www.example.com`.
    Enter only the address, with no `/news/hello/` path after it.
 5. Select the **Public content types** that your Next.js site actually displays.

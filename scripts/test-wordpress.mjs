@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, dirname, basename } from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const pluginPath = '/wordpress/wp-content/plugins/headless-bridge-for-rank-math';
+const pluginPath = '/wordpress/wp-content/plugins/readyspace-headless-seo-bridge-for-rank-math';
 const packageFile = process.env.BRIDGE_TEST_PACKAGE;
 const testPath = packageFile ? '/bridge-source' : pluginPath;
 const dependencies = process.env.BRIDGE_TEST_DEPENDENCIES;
@@ -31,11 +31,14 @@ const blueprint = {
     ...(packageFile ? [{ step: 'installPlugin', pluginData: { resource: 'vfs', path: `/bridge-package/${basename(packageFile)}` } }] : []),
     { step: 'activatePlugin', pluginPath: 'seo-by-rank-math/rank-math.php' },
     { step: 'activatePlugin', pluginPath: 'wp-graphql/wp-graphql.php' },
-    { step: 'activatePlugin', pluginPath: 'headless-bridge-for-rank-math/rank-math-headless-bridge.php' },
+    { step: 'activatePlugin', pluginPath: 'readyspace-headless-seo-bridge-for-rank-math/rank-math-headless-bridge.php' },
   ],
 };
 const site = await runCLI({ command: 'server', port: 0, workers: 1, php: blueprint.preferredVersions.php, wp: blueprint.preferredVersions.wp, 'site-url': 'https://cms.example.com', mount, blueprint });
 try {
+  const preserved = await site.playground.run({ code: `<?php require '/wordpress/wp-load.php'; $expected = ['frontend_origin' => 'https://www.example.com', 'seo' => true, 'metadata' => true, 'graphql' => true, 'cms_noindex' => true, 'public_post_types' => ['post', 'page']]; if (get_option('headless_bridge_settings') !== $expected) { throw new RuntimeException('Activating the renamed package changed existing bridge settings.'); } echo 'Existing bridge settings preserved after activation: passed.';` });
+  if (preserved.exitCode !== 0 || preserved.errors) throw new Error(preserved.errors || preserved.text);
+  console.log(preserved.text);
   const syntax = await site.playground.run({ code: `<?php $files = array_merge(glob('${pluginPath}/*.php'), glob('${pluginPath}/includes/*.php'), glob('${pluginPath}/tests/*.php')); foreach ($files as $file) { token_get_all(file_get_contents($file), TOKEN_PARSE); } echo 'PHP syntax: ' . count($files) . ' files passed.';` });
   if (syntax.exitCode !== 0 || syntax.errors) throw new Error(syntax.errors || syntax.text);
   console.log(syntax.text);
@@ -55,7 +58,7 @@ try {
   const absent = await site.playground.run({ code: `<?php require '/wordpress/wp-load.php'; if (function_exists('graphql')) { throw new RuntimeException('WPGraphQL should be absent.'); } $post = get_page_by_path('bridge-alpha', OBJECT, 'post'); $data = HeadlessBridge\\Metadata::for_post($post->ID); if (is_wp_error($data) || $data['title'] !== 'Alpha custom SEO title') { throw new RuntimeException('REST provider failed without optional WPGraphQL.'); } echo 'Absent WPGraphQL dependency: passed.';` });
   if (absent.exitCode !== 0 || absent.errors) throw new Error(absent.errors || absent.text);
   console.log(absent.text);
-  const uninstall = await site.playground.run({ code: `<?php require '/wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; $rank_math = get_option('rank-math-options-general'); $post = get_page_by_path('bridge-alpha', OBJECT, 'post'); uninstall_plugin('headless-bridge-for-rank-math/rank-math-headless-bridge.php'); if (false !== get_option('headless_bridge_settings', false)) { throw new RuntimeException('Bridge settings remain after uninstall.'); } if ($rank_math !== get_option('rank-math-options-general') || !get_post($post->ID)) { throw new RuntimeException('Uninstall modified Rank Math settings or site content.'); } echo 'Uninstall removes only bridge settings: passed.';` });
+  const uninstall = await site.playground.run({ code: `<?php require '/wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; $rank_math = get_option('rank-math-options-general'); $post = get_page_by_path('bridge-alpha', OBJECT, 'post'); uninstall_plugin('readyspace-headless-seo-bridge-for-rank-math/rank-math-headless-bridge.php'); if (false !== get_option('headless_bridge_settings', false)) { throw new RuntimeException('Bridge settings remain after uninstall.'); } if ($rank_math !== get_option('rank-math-options-general') || !get_post($post->ID)) { throw new RuntimeException('Uninstall modified Rank Math settings or site content.'); } echo 'Uninstall removes only bridge settings: passed.';` });
   if (uninstall.exitCode !== 0 || uninstall.errors) throw new Error(uninstall.errors || uninstall.text);
   console.log(uninstall.text);
 } catch (error) {

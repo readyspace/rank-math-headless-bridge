@@ -5,7 +5,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import re
 
 root = Path(__file__).resolve().parents[1]
-slug = 'headless-bridge-for-rank-math'
+slug = 'readyspace-headless-seo-bridge-for-rank-math'
 files = [root / name for name in (
     'rank-math-headless-bridge.php', 'uninstall.php', 'readme.txt', 'LICENSE',
     'CHANGELOG.md', 'CREDITS.md',

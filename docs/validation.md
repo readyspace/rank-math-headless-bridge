@@ -1,4 +1,45 @@
-# Validation for the prepared 0.2.0 release
+# Validation for the corrected 0.2.1 release
+
+## Corrected name and package — 2026-10-12
+
+**ReadySpace Headless SEO Bridge for Rank Math 0.2.1** uses the proposed folder
+and text domain `readyspace-headless-seo-bridge-for-rank-math`. WordPress.org's
+October 12 preliminary name review prompted this change; it does not establish
+approval of the replacement name or slug.
+
+The ZIP `readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip` contains exactly
+13 allowlisted files. Every archive entry matches its source. Its SHA-256 is
+`7df1c622474dd9baddca071cf74603e2ff5587c57294ea4338072219c0e5e752`.
+The saved [Plugin Check report](plugin-check-report.json) identifies this ZIP.
+Official Plugin Check 2.1.0 ran all 29 non-experimental static checks on WordPress
+7.1.3 and PHP 8.3.33: **zero errors and zero warnings**. No checks or result
+codes were excluded; optional AI analysis was not enabled.
+
+The same final ZIP installed and activated on WordPress **6.7.10** and
+**7.1.3**, with Rank Math **1.0.280**, WPGraphQL **2.23.1** and PHP **8.3.33**.
+Each run passed 55 integration, 63 settings/mapping and 115 metadata/Rank Math
+assertions, syntax checks for all nine PHP files, disabled GraphQL, absent
+WPGraphQL and uninstall checks. A new assertion verified that activating the
+renamed package preserved previously saved bridge settings exactly, before the
+other tests changed those settings. This does not simulate both old plugin
+folders remaining on disk or certify a live migration. The guide explains how
+to replace either old folder without running its uninstaller.
+
+The namespace, option name, REST route, GraphQL fields and developer hooks are
+unchanged. Runtime differences are limited to the name, text domain and version.
+Seven frontend tests passed. A Next.js 16.4.0/React 19.3.0 production build,
+TypeScript checks and generated HTML assertions passed on Node 24.19.0.
+
+The official online readme validator reported no errors or warnings for the
+new display name and stable tag 0.2.1. Only optional Upgrade Notice, Screenshots
+and donate-link notes remain. The Rank Math affiliate disclosure, ReadySpace
+introduction and independent-project credits remain in the packaged readme.
+
+The first local WordPress attempts stopped at a download timeout before testing
+plugin code. Downloading the official dependencies and using IPv4-first Node
+connections resolved this; the successful runs used the unchanged test suites
+and real upstream plugins. Remote CI results and WordPress.org acceptance must
+be checked separately. The sections below are historical 0.2.0/alpha evidence.
 
 ## WordPress.org preparation checks — 2026-10-11
 
@@ -11,7 +52,7 @@ introduction used in the proposed directory description.
 
 Official Plugin Check **2.1.0** ran all **29 non-experimental static checks**
 against the installed ZIP on WordPress **7.1.3**, PHP **8.3.33**:
-**zero errors and zero warnings**. The [machine-readable report](plugin-check-report.json)
+**zero errors and zero warnings**. The [original 0.2.0 report](https://github.com/readyspace/rank-math-headless-bridge/blob/15f0f837fed83eb4b0131ca9aa15b596c0339b83/docs/plugin-check-report.json)
 records every check. Optional AI analysis was not enabled. This is a static
 review; it is separate from the real-provider integration tests and is not
 WordPress.org approval.
@@ -43,7 +84,8 @@ The [WordPress.org readme validator](https://wordpress.org/plugins/developers/re
 checked the final packaged `readme.txt`. It reported no errors or
 warnings, only notes about optional Upgrade Notice, Screenshots and donation
 sections. Contributor `readyspace` and stable tag `0.2.0` appeared in the
-validated readme. Directory submission and approval have not taken place.
+validated readme. Version 0.2.0 was submitted on October 11, 2026;
+WordPress.org requested a distinctive name on October 12. Approval remains pending.
 
 After adding the ReadySpace introduction, author website and disclosed Rank Math
 affiliate link, the ZIP was rebuilt and all 29 static checks passed again with
@@ -115,4 +157,5 @@ CMS configuration, public plugin-directory listing, or production site changed.
 The prepared 0.2.0 package replaces that earlier packaging and Plugin Check
 status. Site-specific staging acceptance, live IndexNow delivery, Pro features,
 multisite/multilingual compatibility and deployed frontend testing still require
-their own evidence. No WordPress.org submission or publication has taken place.
+their own evidence. Version 0.2.0 was submitted on October 11; the
+corrected 0.2.1 review package and publication remain separate steps.

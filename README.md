@@ -1,4 +1,4 @@
-# Headless Bridge for Rank Math
+# ReadySpace Headless SEO Bridge for Rank Math
 
 Bring Rank Math's SEO settings from WordPress to a separate Next.js website.
 
@@ -13,9 +13,9 @@ one request. WPGraphQL is optional for the WordPress plugin. Developers who use
 REST can choose the [REST alternative](docs/metadata.md). Nothing switches APIs
 automatically, and every bridge feature starts turned off.
 
-**Version: 0.2.0.** Prepared for the first public release, with the supported
-features and limits below. The WordPress.org listing still needs submission and
-review. Test on a copy of your site first and read
+**Version: 0.2.1.** Prepared with a distinctive ReadySpace name for the
+WordPress.org review. The corrected ZIP still needs upload and review. Test on a
+copy of your site first and read
 [what has been tested](docs/validation.md) before changing a live site.
 
 ## What is Rank Math?
@@ -74,18 +74,20 @@ walks through both sides.
 
 ## Installing the prepared release
 
-The WordPress ZIP installs into `wp-content/plugins/headless-bridge-for-rank-math/`.
+The WordPress ZIP installs into
+`wp-content/plugins/readyspace-headless-seo-bridge-for-rank-math/`.
 It contains the WordPress plugin and its licence, changelog and credits.
 The setup guides and Next.js examples stay in this GitHub repository; they are
 not copied into your frontend or included in the lean WordPress ZIP.
 
-If you already installed an older ZIP under `rank-math-headless-bridge/`, follow
+If you already installed an older ZIP under `rank-math-headless-bridge/` or
+`headless-bridge-for-rank-math/`, follow
 the [folder-change steps](docs/migration.md#upgrading-an-older-bridge-zip) before
 activating this version. Keep only one bridge active.
 
 ## Choose the features you need
 
-Open **Settings → Headless Bridge** in WordPress. All features start off.
+Open **Settings → ReadySpace SEO Bridge** in WordPress. All features start off.
 
 | Feature in WordPress | What it does |
 | --- | --- |

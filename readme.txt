@@ -1,10 +1,10 @@
-=== Headless Bridge for Rank Math ===
+=== ReadySpace Headless SEO Bridge for Rank Math ===
 Contributors: readyspace
 Tags: headless, seo, graphql, nextjs, indexnow
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -73,7 +73,7 @@ The bridge generates SEO inside your WordPress site. Its REST route and optional
 1. Test on a copy of your site first.
 2. Install and activate Rank Math and this bridge. Install WPGraphQL for the main Next.js setup.
 3. Enable Rank Math Headless CMS Support and use readable WordPress permalinks.
-4. Open Settings -> Headless Bridge. Enter the public website address and select the public content types.
+4. Open Settings -> ReadySpace SEO Bridge. Enter the public website address and select the public content types.
 5. For WPGraphQL, enable SEO through WPGraphQL and Correct Rank Math schema addresses. The REST endpoint can stay off.
 6. Follow the linked beginner setup guide and App Router guide to connect Next.js. Check the actual page source.
 7. Add other features one at a time. Follow the migration guide when replacing older helpers. Read the external-service notes before enabling IndexNow.
@@ -106,9 +106,13 @@ First compare their behavior on staging. Keep backups and replace one job at a t
 
 = How do I upgrade an older bridge ZIP? =
 
-The directory package uses the folder headless-bridge-for-rank-math. Older ZIPs used rank-math-headless-bridge. Back up your settings and old files, deactivate the old bridge and follow the [folder-change guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md#upgrading-an-older-bridge-zip). Never activate both copies. Deactivation keeps settings; deleting the new plugin through WordPress removes only the bridge's own settings.
+Version 0.2.1 uses the folder readyspace-headless-seo-bridge-for-rank-math. Older ZIPs used rank-math-headless-bridge or headless-bridge-for-rank-math. Back up your settings and old files, deactivate the old bridge and follow the [folder-change guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md#upgrading-an-older-bridge-zip). Never activate both copies. Deactivation keeps settings. Deleting a bridge version with an uninstaller through WordPress removes their shared bridge settings, so remove only the old code folder after backing up.
 
 == Changelog ==
+
+= 0.2.1 =
+
+Use the distinctive ReadySpace Headless SEO Bridge for Rank Math name, with a matching directory folder and text domain. Existing bridge settings, SEO APIs and Next.js helpers stay compatible. Follow the migration guide when replacing an older ZIP.
 
 = 0.2.0 =
 

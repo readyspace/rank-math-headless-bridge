@@ -7,7 +7,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const packageFile = resolve(root, process.env.BRIDGE_TEST_PACKAGE || 'dist/headless-bridge-for-rank-math-0.2.0.zip');
+const packageFile = resolve(root, process.env.BRIDGE_TEST_PACKAGE || 'dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip');
 const packageSha256 = createHash('sha256').update(await readFile(packageFile)).digest('hex');
 const checker = process.env.BRIDGE_PLUGIN_CHECK_DIR;
 const mount = [{ hostPath: dirname(packageFile), vfsPath: '/bridge-package' }];
@@ -29,8 +29,8 @@ try {
     require_once ABSPATH . 'wp-admin/includes/file.php';
     wp_set_current_user(1);
     $context = new WordPress\\Plugin_Check\\Checker\\Check_Context(
-      WP_PLUGIN_DIR . '/headless-bridge-for-rank-math/rank-math-headless-bridge.php',
-      'headless-bridge-for-rank-math', 'new'
+      WP_PLUGIN_DIR . '/readyspace-headless-seo-bridge-for-rank-math/rank-math-headless-bridge.php',
+      'readyspace-headless-seo-bridge-for-rank-math', 'new'
     );
     $checks = (new WordPress\\Plugin_Check\\Checker\\Default_Check_Repository())->get_checks(
       WordPress\\Plugin_Check\\Checker\\Check_Repository::TYPE_STATIC

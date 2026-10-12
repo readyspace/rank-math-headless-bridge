@@ -6,29 +6,41 @@ Test one job at a time on a staging copy of your site.
 
 ## Upgrading an older bridge ZIP
 
-The first ZIP installed into `wp-content/plugins/rank-math-headless-bridge/`.
-The prepared directory release installs into
-`wp-content/plugins/headless-bridge-for-rank-math/`. WordPress treats these as
-two separate plugin folders, even though the display name is the same.
+Version 0.2.1 is named **ReadySpace Headless SEO Bridge for Rank Math**. Its folder
+is `wp-content/plugins/readyspace-headless-seo-bridge-for-rank-math/`.
+There are two older folders you may already have:
+
+| Older package | Installed folder |
+| --- | --- |
+| Initial alpha ZIP | `wp-content/plugins/rank-math-headless-bridge/` |
+| Version 0.2.0 submitted to WordPress.org | `wp-content/plugins/headless-bridge-for-rank-math/` |
+
+WordPress treats a different folder as a separate plugin. Follow these steps
+for whichever older copy is installed. If more than one is present, keep them
+all deactivated while replacing the old code.
 
 1. Back up your WordPress database and old bridge files. Also write down the
    public website address, selected content types and enabled bridge features.
 2. Deactivate the old bridge in **Plugins**. Deactivation keeps its settings.
-3. Use your host's file manager or ask your developer to copy the old
-   `rank-math-headless-bridge` folder to a backup location outside
+3. Use your host's file manager or ask your developer to copy the old folder
+   from the table above to a backup location outside
    `wp-content/plugins/`, then remove only that old folder from the plugins
    directory. This removes the old code without running a plugin deletion task.
-4. Upload `headless-bridge-for-rank-math-0.2.0.zip` and activate the new bridge.
-5. Open **Settings → Headless Bridge** and check your saved choices. Repeat the
+4. Upload `readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip` and activate
+   **ReadySpace Headless SEO Bridge for Rank Math**.
+5. Open **Settings → ReadySpace SEO Bridge** and check your saved choices. Repeat the
    published-page SEO checks below before changing the live site.
 
-Never activate both copies. The saved setting name `headless_bridge_settings`
-and the SEO APIs remain the same, so the folder change can keep the existing
-settings. Keep your backup until you have checked the result.
+Keep only one bridge active. The saved setting name `headless_bridge_settings`,
+REST route, GraphQL field and developer hooks remain the same. Your existing
+Next.js integration can keep using them. Keep your backup until you have checked
+the result.
 
-Deleting the new directory version through WordPress runs its uninstaller and
-removes the bridge's own settings. It leaves Rank Math settings and content
-alone. To pause the new version and keep settings, deactivate it instead.
+Use the file-manager step to remove old code while preserving settings.
+Version 0.2.0 and the new version have uninstallers. Deleting either through
+WordPress removes their shared bridge settings, including choices used by a
+replacement copy. It leaves Rank Math settings and content alone. To pause the
+bridge and keep settings, deactivate it instead.
 
 The sections below cover other helpers you may also be replacing.
 
