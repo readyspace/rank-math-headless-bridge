@@ -38,8 +38,14 @@ introduction and independent-project credits remain in the packaged readme.
 The first local WordPress attempts stopped at a download timeout before testing
 plugin code. Downloading the official dependencies and using IPv4-first Node
 connections resolved this; the successful runs used the unchanged test suites
-and real upstream plugins. Remote CI results and WordPress.org acceptance must
-be checked separately. The sections below are historical 0.2.0/alpha evidence.
+and real upstream plugins. All eight push and eight pull-request CI jobs passed
+for source commit `d82da4016908eae5eac8aa4bd9aa234d4b8350a6` in
+[PR #3](https://github.com/readyspace/rank-math-headless-bridge/pull/3), which was
+merged into main. The exact checked ZIP was uploaded to the existing WordPress.org
+submission on October 12. The page and automated email confirmed receipt of
+version 0.2.1. A reply in the original review thread requested the replacement
+slug; reservation and directory approval remain pending. The sections below
+are historical 0.2.0/alpha evidence.
 
 ## WordPress.org preparation checks — 2026-10-11
 
@@ -158,4 +164,5 @@ The prepared 0.2.0 package replaces that earlier packaging and Plugin Check
 status. Site-specific staging acceptance, live IndexNow delivery, Pro features,
 multisite/multilingual compatibility and deployed frontend testing still require
 their own evidence. Version 0.2.0 was submitted on October 11; the
-corrected 0.2.1 review package and publication remain separate steps.
+corrected 0.2.1 review package was uploaded on October 12. Publication remains
+pending approval.

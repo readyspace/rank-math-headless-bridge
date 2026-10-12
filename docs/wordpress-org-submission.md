@@ -6,9 +6,11 @@ first. After approval, we upload the release to its separate SVN repository.
 
 **Current status: name review in progress.** Version **0.2.0** was submitted on
 October 11, 2026. On October 12, the WordPress.org team requested a more
-distinctive name. We are preparing corrected version **0.2.1** as **ReadySpace
-Headless SEO Bridge for Rank Math**. The corrected ZIP has not yet been uploaded,
-and the plugin has not been approved or published.
+distinctive name. Corrected version **0.2.1**, **ReadySpace Headless SEO Bridge
+for Rank Math**, was uploaded to the existing submission on October 12. We replied
+to the original review thread requesting the replacement slug. WordPress.org
+confirmed receipt of the updated file. Slug confirmation and approval are pending;
+the plugin has not been published.
 
 ## Proposed listing
 
@@ -17,7 +19,7 @@ and the plugin has not been approved or published.
 | Display name | ReadySpace Headless SEO Bridge for Rank Math |
 | Requested address name, called a slug | `readyspace-headless-seo-bridge-for-rank-math` |
 | Translation name, called a text domain | `readyspace-headless-seo-bridge-for-rank-math` |
-| Corrected release being prepared | `0.2.1` |
+| Corrected release uploaded for review | `0.2.1` |
 | Minimum WordPress version | 6.7 |
 | Tested WordPress series | 6.7 and 7.1 |
 | Minimum PHP version declared by the plugin | 7.4 |
@@ -61,16 +63,21 @@ Suggested explanation for the reviewer:
 - [x] PHP compatibility limits are documented. The declared minimum is 7.4;
   real-provider integration was checked on PHP 8.3.33. The local PHP 7.4
   Playground failure does not establish real-provider PHP 7.4 support.
-- [ ] Check the renamed branch's completed CI results for its final commit.
+- [x] All eight push and eight pull-request CI jobs passed for source commit
+  `d82da4016908eae5eac8aa4bd9aa234d4b8350a6` in
+  [PR #3](https://github.com/readyspace/rank-math-headless-bridge/pull/3).
   Native PHP regression checks do not establish full Rank Math integration on
   every PHP version; real-provider PHP 7.4 support remains unverified.
 - [x] Inspect the new ZIP. Keep the lean runtime files, GPL-compatible licence,
   changelog and credits. Check that every archived file matches its source and
   the folder is `readyspace-headless-seo-bridge-for-rank-math`. Keep guides,
   examples, tests, build caches and development dependencies on GitHub.
-- [ ] Upload the corrected ZIP through the existing submission and ask the
-  review team to use the new display name and slug. Wait for their confirmation
-  and any remaining review requests.
+- [x] Upload the corrected ZIP through the existing submission and reply to
+  the original review thread requesting the new display name and slug.
+  WordPress.org's page and automated email confirmed receipt of version 0.2.1.
+- [ ] Wait for the review team's confirmation of the replacement slug and
+  address any remaining review requests. The assigned slug still shows
+  `headless-bridge-for-rank-math`; the proposed replacement is not yet confirmed.
 
 The review team decides whether the proposed name and slug are acceptable. Test
 results do not mean directory approval or support for every live setup.

@@ -14,7 +14,8 @@ REST can choose the [REST alternative](docs/metadata.md). Nothing switches APIs
 automatically, and every bridge feature starts turned off.
 
 **Version: 0.2.1.** Prepared with a distinctive ReadySpace name for the
-WordPress.org review. The corrected ZIP still needs upload and review. Test on a
+WordPress.org review. The corrected ZIP was uploaded on October 12, 2026;
+slug confirmation and approval are pending. Test on a
 copy of your site first and read
 [what has been tested](docs/validation.md) before changing a live site.
 

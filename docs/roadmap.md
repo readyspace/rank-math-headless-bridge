@@ -45,8 +45,8 @@ sender verification, limits on reports, minimal stored data and a retention peri
 Version 0.2.0 was submitted on October 11, 2026. On October 12, the review team
 requested a more distinctive name. Version 0.2.1 uses **ReadySpace Headless SEO
 Bridge for Rank Math**, with the proposed directory slug and text domain
-`readyspace-headless-seo-bridge-for-rank-math`. The corrected ZIP still needs
-upload and review. The
+`readyspace-headless-seo-bridge-for-rank-math`. The corrected ZIP was uploaded on October 12, 2026.
+Slug confirmation and approval are pending. The
 [submission guide](wordpress-org-submission.md) tracks final package checks,
 WordPress.org review and publication. The plugin is not listed merely because
 its changes are merged on GitHub.

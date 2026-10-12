@@ -4,8 +4,8 @@ This guide connects an existing WordPress site to an existing Next.js site.
 WordPress is where you edit. Next.js is the website visitors see.
 
 Use a test copy of your site first. Version 0.2.1 has the distinctive ReadySpace
-name requested during WordPress.org review; the corrected ZIP still needs upload
-and review. Someone who manages your
+name requested during WordPress.org review. The corrected ZIP was uploaded on
+October 12, 2026; slug confirmation and approval are pending. Someone who manages your
 Next.js code must complete the frontend steps. You do not need to understand
 every line of code to follow the plan.
 
