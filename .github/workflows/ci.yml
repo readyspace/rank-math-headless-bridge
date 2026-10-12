@@ -57,7 +57,7 @@ jobs:
         env:
           BRIDGE_TEST_WP: ${{ matrix.wordpress }}
           BRIDGE_TEST_PHP: '8.3'
-          BRIDGE_TEST_PACKAGE: dist/headless-bridge-for-rank-math-0.2.0.zip
+          BRIDGE_TEST_PACKAGE: dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip
   wordpress-directory-check:
     runs-on: ubuntu-24.04
     services:
@@ -90,7 +90,7 @@ jobs:
           wp core download --path=/tmp/bridge-directory-site
           wp config create --path=/tmp/bridge-directory-site --dbname=wordpress --dbuser=root --dbpass=bridge-test-only --dbhost=127.0.0.1
           wp core install --path=/tmp/bridge-directory-site --url=http://127.0.0.1:8090 --title="Bridge directory test" --admin_user=reviewer --admin_password=bridge-test-only --admin_email=reviewer@example.test --skip-email
-          wp plugin install "$GITHUB_WORKSPACE/dist/headless-bridge-for-rank-math-0.2.0.zip" --activate --path=/tmp/bridge-directory-site
+          wp plugin install "$GITHUB_WORKSPACE/dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip" --activate --path=/tmp/bridge-directory-site
           wp plugin install plugin-check --activate --path=/tmp/bridge-directory-site
       - name: Check actual packaged plugin for WordPress.org
-        run: wp plugin check headless-bridge-for-rank-math --slug=headless-bridge-for-rank-math --format=json --path=/tmp/bridge-directory-site
+        run: wp plugin check readyspace-headless-seo-bridge-for-rank-math --slug=readyspace-headless-seo-bridge-for-rank-math --format=json --path=/tmp/bridge-directory-site

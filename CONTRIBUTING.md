@@ -14,7 +14,7 @@ creates a disposable Playground installation with real upstream plugins; it need
 network access on the first run. Set `BRIDGE_TEST_WP` and `BRIDGE_TEST_PHP` to
 choose versions. `BRIDGE_TEST_DEPENDENCIES` can point at a local directory
 containing extracted `seo-by-rank-math` and `wp-graphql` plugin folders.
-After packaging, set `BRIDGE_TEST_PACKAGE=dist/headless-bridge-for-rank-math-0.2.0.zip`
+After packaging, set `BRIDGE_TEST_PACKAGE=dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip`
 to install and test the ZIP instead of mounting the source as the active plugin.
 Run `npm run check:plugin` for the official Plugin Check static checks against that
 ZIP. The check uses a disposable WordPress site and installs the official checker;
@@ -51,7 +51,7 @@ use the development tools below. WordPress.org submission and SVN publication
 are separate steps; pushing to GitHub does not publish the plugin directory
 release.
 
-Clone the repository into a local WordPress development environment. Use the folder name `headless-bridge-for-rank-math`. Install Rank Math separately; this repository does not bundle its code.
+Clone the repository into a local WordPress development environment. Use the folder name `readyspace-headless-seo-bridge-for-rank-math`. Install Rank Math separately; this repository does not bundle its code.
 
 The current compatibility target is WordPress 6.7 or newer and PHP 7.4 or newer, matching the current Rank Math minimum. Run the checks documented in the repository's CI workflow before opening a pull request. For a change to a WordPress hook, add a focused test of its observable behavior and test it in a disposable WordPress installation. Pure unit tests do not establish full Rank Math compatibility.
 

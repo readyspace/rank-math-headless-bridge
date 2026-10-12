@@ -1,6 +1,6 @@
 # What we plan to build next
 
-## Prepared for version 0.2.0
+## Prepared for version 0.2.1
 
 - WPGraphQL is the main Next.js integration, but optional for the WordPress plugin.
 - REST remains a separate alternative. There is no automatic API fallback.
@@ -42,8 +42,11 @@ sender verification, limits on reports, minimal stored data and a retention peri
 
 ## WordPress.org publication
 
-Version 0.2.0 is prepared for the first public release. The proposed directory
-slug and text domain are `headless-bridge-for-rank-math`. The
+Version 0.2.0 was submitted on October 11, 2026. On October 12, the review team
+requested a more distinctive name. Version 0.2.1 uses **ReadySpace Headless SEO
+Bridge for Rank Math**, with the proposed directory slug and text domain
+`readyspace-headless-seo-bridge-for-rank-math`. The corrected ZIP still needs
+upload and review. The
 [submission guide](wordpress-org-submission.md) tracks final package checks,
 WordPress.org review and publication. The plugin is not listed merely because
 its changes are merged on GitHub.

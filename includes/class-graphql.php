@@ -19,7 +19,7 @@ final class GraphQL {
 			return;
 		}
 		register_graphql_object_type( 'HeadlessBridgeRobots', [
-			'description' => __( 'Rank Math crawler directives for the public frontend.', 'headless-bridge-for-rank-math' ),
+			'description' => __( 'Rank Math crawler directives for the public frontend.', 'readyspace-headless-seo-bridge-for-rank-math' ),
 			'fields' => [
 				'robots' => [ 'type' => 'String' ],
 				'googlebot' => [ 'type' => 'String' ],
@@ -33,7 +33,7 @@ final class GraphQL {
 			'fields' => [ 'name' => [ 'type' => 'String' ], 'content' => [ 'type' => 'String' ] ],
 		] );
 		register_graphql_object_type( 'HeadlessBridgeSeo', [
-			'description' => __( 'Computed SEO for published, password-free content; not an editor or preview API.', 'headless-bridge-for-rank-math' ),
+			'description' => __( 'Computed SEO for published, password-free content; not an editor or preview API.', 'readyspace-headless-seo-bridge-for-rank-math' ),
 			'fields' => [
 				'postId' => [ 'type' => 'Int' ],
 				'title' => [ 'type' => 'String' ],
@@ -44,7 +44,7 @@ final class GraphQL {
 				'twitter' => [ 'type' => [ 'list_of' => 'HeadlessBridgeTwitterTag' ] ],
 				'jsonLd' => [
 					'type' => [ 'list_of' => 'String' ],
-					'description' => __( 'One JSON string per schema graph. Parse as JSON and safely serialize before rendering.', 'headless-bridge-for-rank-math' ),
+					'description' => __( 'One JSON string per schema graph. Parse as JSON and safely serialize before rendering.', 'readyspace-headless-seo-bridge-for-rank-math' ),
 					'resolve' => static function ( $seo ) {
 						return array_map( 'wp_json_encode', $seo['jsonLd'] );
 					},
@@ -53,7 +53,7 @@ final class GraphQL {
 		] );
 		register_graphql_field( 'ContentNode', 'headlessSeo', [
 			'type' => 'HeadlessBridgeSeo',
-			'description' => __( 'Optional Rank Math headless metadata. Null for unsupported or non-public content.', 'headless-bridge-for-rank-math' ),
+			'description' => __( 'Optional Rank Math headless metadata. Null for unsupported or non-public content.', 'readyspace-headless-seo-bridge-for-rank-math' ),
 			'resolve' => [ __CLASS__, 'resolve' ],
 		] );
 	}
@@ -78,7 +78,7 @@ final class GraphQL {
 			}
 		}
 		if ( is_wp_error( $cache[ $id ] ) ) {
-			throw new \GraphQL\Error\UserError( esc_html__( 'Headless SEO metadata is unavailable. Check the bridge and Rank Math headless settings.', 'headless-bridge-for-rank-math' ) );
+			throw new \GraphQL\Error\UserError( esc_html__( 'Headless SEO metadata is unavailable. Check the bridge and Rank Math headless settings.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
 		}
 		return $cache[ $id ];
 	}
