@@ -13,10 +13,12 @@ one request. WPGraphQL is optional for the WordPress plugin. Developers who use
 REST can choose the [REST alternative](docs/metadata.md). Nothing switches APIs
 automatically, and every bridge feature starts turned off.
 
-**Version: 0.2.1.** Prepared with a distinctive ReadySpace name for the
-WordPress.org review. The corrected ZIP was uploaded on October 12, 2026;
-slug confirmation and approval are pending. Test on a
-copy of your site first and read
+**Version: 0.2.1. Available on WordPress.org.**
+
+- [View the plugin page](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/)
+- [Download version 0.2.1 ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.2.1.zip)
+
+Test on a copy of your site first and read
 [what has been tested](docs/validation.md) before changing a live site.
 
 ## What is Rank Math?
@@ -73,18 +75,25 @@ The plugin cannot place tags in Next.js by itself. You also need to add the
 frontend example to your Next.js project. The [setup guide](docs/quick-start.md)
 walks through both sides.
 
-## Installing the prepared release
+## Install the plugin
+
+If you already installed an older ZIP under `rank-math-headless-bridge/` or
+`headless-bridge-for-rank-math/`, follow
+the [folder-change steps](docs/migration.md#upgrading-an-older-bridge-zip) before
+activating this version. Keep only one bridge active.
+
+1. In WordPress, open **Plugins → Add New Plugin**.
+2. Search for **ReadySpace Headless SEO Bridge for Rank Math**.
+3. Click **Install Now**, then **Activate**.
+
+For a manual installation, download the ZIP linked above and use
+**Plugins → Add New Plugin → Upload Plugin**.
 
 The WordPress ZIP installs into
 `wp-content/plugins/readyspace-headless-seo-bridge-for-rank-math/`.
 It contains the WordPress plugin and its licence, changelog and credits.
 The setup guides and Next.js examples stay in this GitHub repository; they are
 not copied into your frontend or included in the lean WordPress ZIP.
-
-If you already installed an older ZIP under `rank-math-headless-bridge/` or
-`headless-bridge-for-rank-math/`, follow
-the [folder-change steps](docs/migration.md#upgrading-an-older-bridge-zip) before
-activating this version. Keep only one bridge active.
 
 ## Choose the features you need
 
@@ -126,7 +135,7 @@ website. We have tested the results, but have not measured GraphQL against REST.
 - [IndexNow setup](docs/indexnow.md)
 - [Replacing older helper plugins](docs/migration.md)
 - [Tests and limits](docs/validation.md)
-- [Preparing the WordPress.org listing](docs/wordpress-org-submission.md)
+- [WordPress.org submission guide](docs/wordpress-org-submission.md)
 - [What we plan to build next](docs/roadmap.md)
 - [Contributing](CONTRIBUTING.md), [reporting security issues](SECURITY.md) and [changes](CHANGELOG.md)
 
