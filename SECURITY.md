@@ -2,7 +2,12 @@
 
 ## Supported releases
 
-Security fixes target the latest published 0.2.x release and the development branch. Version 0.2.0 is prepared for its first public release; WordPress.org submission and approval are separate steps. Earlier alpha builds are unsupported once the public release is available.
+Security fixes target the latest published 0.2.x release and the development
+branch. The current published version is **0.2.1**, available on
+[WordPress.org](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/). Earlier alpha and
+pre-directory builds are unsupported. Use the
+[upgrade guide](docs/migration.md#upgrading-an-older-bridge-zip) to replace an older
+ZIP while preserving your bridge settings.
 
 ## Report a vulnerability privately
 

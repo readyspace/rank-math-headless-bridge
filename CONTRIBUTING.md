@@ -1,5 +1,9 @@
 # Contributing
 
+Version **0.2.1** is published on [WordPress.org](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/).
+Use that page to install the plugin. Use this GitHub repository to work on its
+code, guides and Next.js examples.
+
 Clone the full [GitHub repository](https://github.com/readyspace/rank-math-headless-bridge)
 before running the development commands below. The installable ZIP contains runtime
 files; guides, frontend examples, tests and development dependencies stay on GitHub.
@@ -47,9 +51,11 @@ review page on GitHub. Review and merge there after the checks pass.
 
 For assisted maintainer work in this repository, use GitHub Desktop for branch,
 commit and push actions. Local editing, packaging, tests and read-only checks can
-use the development tools below. WordPress.org submission and SVN publication
-are separate steps; pushing to GitHub does not publish the plugin directory
-release.
+use the development tools below. WordPress.org releases are uploaded separately
+to the [approved SVN repository](https://plugins.svn.wordpress.org/readyspace-headless-seo-bridge-for-rank-math/).
+Pushing to GitHub does not publish a plugin directory release. Follow the
+[future release steps](docs/wordpress-org-submission.md#publish-future-releases)
+when preparing an update for WordPress.org.
 
 Clone the repository into a local WordPress development environment. Use the folder name `readyspace-headless-seo-bridge-for-rank-math`. Install Rank Math separately; this repository does not bundle its code.
 

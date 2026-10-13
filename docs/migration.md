@@ -6,8 +6,10 @@ Test one job at a time on a staging copy of your site.
 
 ## Upgrading an older bridge ZIP
 
-Version 0.2.1 is named **ReadySpace Headless SEO Bridge for Rank Math**. Its folder
-is `wp-content/plugins/readyspace-headless-seo-bridge-for-rank-math/`.
+Version **0.2.1** is published on
+[WordPress.org](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/) as
+**ReadySpace Headless SEO Bridge for Rank Math**. Its folder is
+`wp-content/plugins/readyspace-headless-seo-bridge-for-rank-math/`.
 There are two older folders you may already have:
 
 | Older package | Installed folder |
@@ -26,8 +28,9 @@ all deactivated while replacing the old code.
    from the table above to a backup location outside
    `wp-content/plugins/`, then remove only that old folder from the plugins
    directory. This removes the old code without running a plugin deletion task.
-4. Upload `readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip` and activate
-   **ReadySpace Headless SEO Bridge for Rank Math**.
+4. [Download version 0.2.1 ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.2.1.zip)
+   from WordPress.org. Upload it through **Plugins → Add New Plugin → Upload Plugin**
+   and activate **ReadySpace Headless SEO Bridge for Rank Math**.
 5. Open **Settings → ReadySpace SEO Bridge** and check your saved choices. Repeat the
    published-page SEO checks below before changing the live site.
 

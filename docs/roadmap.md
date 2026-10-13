@@ -1,6 +1,6 @@
 # What we plan to build next
 
-## Prepared for version 0.2.1
+## Delivered in version 0.2.1
 
 - WPGraphQL is the main Next.js integration, but optional for the WordPress plugin.
 - REST remains a separate alternative. There is no automatic API fallback.
@@ -9,9 +9,16 @@
 - App Router examples render search tags, sharing tags and schema on the server.
 - Tests use real WordPress, Rank Math and WPGraphQL, plus a Next.js production build.
 
+Version **0.2.1** was published on **October 13, 2026** as **ReadySpace Headless
+SEO Bridge for Rank Math**. Install it from the
+[WordPress Plugin Directory](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/).
+The release is available in `trunk` and `tags/0.2.1` at SVN revision **3743846**,
+uploaded by `readyspace`.
+
 See [test results and limits](validation.md). Test your own staging site before
 changing a live website. This release does not cover every Rank Math feature or
-automatically migrate an existing frontend.
+automatically migrate an existing frontend. It remains an independent project;
+publication does not mean Rank Math endorses it.
 
 ## Next: keep saved pages fresh
 
@@ -40,18 +47,19 @@ HTTP status, not only display a different page. Start with exact-match redirects
 Optional 404 reports could tell WordPress when a public page is missing. Plan
 sender verification, limits on reports, minimal stored data and a retention period.
 
-## WordPress.org publication
+## Maintain the public release
 
-Version 0.2.0 was submitted on October 11, 2026. On October 12, the review team
-requested a more distinctive name. Version 0.2.1 uses **ReadySpace Headless SEO
-Bridge for Rank Math**, with the proposed directory slug and text domain
-`readyspace-headless-seo-bridge-for-rank-math`. The corrected ZIP was uploaded on October 12, 2026.
-Slug confirmation and approval are pending. The
-[submission guide](wordpress-org-submission.md) tracks final package checks,
-WordPress.org review and publication. The plugin is not listed merely because
-its changes are merged on GitHub.
+WordPress.org confirmed the slug `readyspace-headless-seo-bridge-for-rank-math`
+and approved the plugin on October 13, 2026. Version 0.2.1 is now available from
+the directory. The [publication guide](wordpress-org-submission.md) records the
+review, package checks and SVN release. Future releases need their own checks,
+version numbers and SVN tags.
 
-Test multisite, multilingual paths, WooCommerce and authenticated previews before
-claiming support for those setups. Keep collecting staging feedback and record
-the versions and Pro features actually tested. Publishing to WordPress.org and
-changing live websites are separate steps.
+Keep collecting staging feedback and record the WordPress, PHP, Rank Math,
+WPGraphQL and Next.js versions actually tested. Test multisite, multilingual
+paths, WooCommerce, Pro features and authenticated previews before claiming
+support for those setups. Real-provider PHP 7.4 support and live IndexNow delivery
+still need verification; publication does not establish those results.
+
+The planned additions above are future work, not features delivered by 0.2.1.
+Installing the public plugin and changing a live website remain separate steps.

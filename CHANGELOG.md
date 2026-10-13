@@ -1,7 +1,8 @@
 # Changelog
 
-## 0.2.1 — Distinctive name for directory review
+## 0.2.1 — First WordPress.org release (2026-10-13)
 
+- Publish the approved plugin on WordPress.org: [plugin page](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/) and [version 0.2.1 download](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.2.1.zip).
 - Rename the plugin to **ReadySpace Headless SEO Bridge for Rank Math** following the WordPress.org name review.
 - Match the package folder and text domain to `readyspace-headless-seo-bridge-for-rank-math`.
 - Keep stored bridge settings, REST and GraphQL APIs, developer hooks and Next.js integration compatible.

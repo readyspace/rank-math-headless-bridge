@@ -3,11 +3,10 @@
 This guide connects an existing WordPress site to an existing Next.js site.
 WordPress is where you edit. Next.js is the website visitors see.
 
-Use a test copy of your site first. Version 0.2.1 has the distinctive ReadySpace
-name requested during WordPress.org review. The corrected ZIP was uploaded on
-October 12, 2026; slug confirmation and approval are pending. Someone who manages your
-Next.js code must complete the frontend steps. You do not need to understand
-every line of code to follow the plan.
+Version **0.2.1** is available on [WordPress.org](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/).
+Use a test copy of your site first. Someone who manages your Next.js code must
+complete the frontend steps. You do not need to understand every line of code
+to follow the plan.
 
 ## 1. Check your starting point
 
@@ -25,16 +24,19 @@ settings as they are; configure the public website in the bridge instead.
 
 ## 2. Install the WordPress plugins
 
+If you already installed an older bridge ZIP, follow the
+[folder-change steps](migration.md#upgrading-an-older-bridge-zip) first.
+Keep only one copy of the bridge active.
+
 1. Install and activate **Rank Math SEO**.
 2. Install and activate **WPGraphQL**.
-3. Upload the bridge ZIP through **Plugins → Add New Plugin → Upload Plugin**.
-4. Activate **ReadySpace Headless SEO Bridge for Rank Math**.
+3. Open **Plugins → Add New Plugin** and search for
+   **ReadySpace Headless SEO Bridge for Rank Math**.
+4. Click **Install Now**, then **Activate**.
 
-The prepared ZIP is named `readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip`.
-Its installed folder is `readyspace-headless-seo-bridge-for-rank-math`.
-If you already installed an older bridge
-ZIP, follow the [folder-change steps](migration.md#upgrading-an-older-bridge-zip)
-first. Do not activate two copies of the bridge.
+For a manual installation, [download version 0.2.1 ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.2.1.zip)
+and use **Plugins → Add New Plugin → Upload Plugin**. Its installed folder is
+`readyspace-headless-seo-bridge-for-rank-math`.
 
 The WordPress ZIP contains the plugin. Keep using the guides and Next.js example
 files from this GitHub repository; they are separate from the WordPress install.
