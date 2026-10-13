@@ -23,6 +23,10 @@ jobs:
         run: php tests/run.php
       - name: Metadata and IndexNow
         run: php tests/metadata-test.php
+      - name: IndexNow public key and complete submission policies
+        run: |
+          php tests/indexnow-test.php
+          php tests/indexnow-test.php --missing-native
   frontend-example:
     runs-on: ubuntu-24.04
     steps:
@@ -52,12 +56,14 @@ jobs:
           node-version: '24.18.0'
           cache: npm
       - run: npm ci
-      - run: python3 scripts/package.py
+      - name: Build exact release package
+        id: package
+        run: echo "path=$(python3 scripts/package.py)" >> "$GITHUB_OUTPUT"
       - run: npm run test:wordpress
         env:
           BRIDGE_TEST_WP: ${{ matrix.wordpress }}
           BRIDGE_TEST_PHP: '8.3'
-          BRIDGE_TEST_PACKAGE: dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip
+          BRIDGE_TEST_PACKAGE: ${{ steps.package.outputs.path }}
   wordpress-directory-check:
     runs-on: ubuntu-24.04
     services:
@@ -84,13 +90,14 @@ jobs:
           tools: wp-cli
           coverage: none
       - name: Build submission ZIP
-        run: python3 scripts/package.py
+        id: package
+        run: echo "path=$(python3 scripts/package.py)" >> "$GITHUB_OUTPUT"
       - name: Install disposable WordPress and official Plugin Check
         run: |
           wp core download --path=/tmp/bridge-directory-site
           wp config create --path=/tmp/bridge-directory-site --dbname=wordpress --dbuser=root --dbpass=bridge-test-only --dbhost=127.0.0.1
           wp core install --path=/tmp/bridge-directory-site --url=http://127.0.0.1:8090 --title="Bridge directory test" --admin_user=reviewer --admin_password=bridge-test-only --admin_email=reviewer@example.test --skip-email
-          wp plugin install "$GITHUB_WORKSPACE/dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip" --activate --path=/tmp/bridge-directory-site
+          wp plugin install "${{ steps.package.outputs.path }}" --activate --path=/tmp/bridge-directory-site
           wp plugin install plugin-check --activate --path=/tmp/bridge-directory-site
       - name: Check actual packaged plugin for WordPress.org
         run: wp plugin check readyspace-headless-seo-bridge-for-rank-math --slug=readyspace-headless-seo-bridge-for-rank-math --format=json --path=/tmp/bridge-directory-site

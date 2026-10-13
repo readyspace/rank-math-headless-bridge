@@ -4,7 +4,7 @@ Tags: headless, seo, graphql, nextjs, indexnow
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.1
+Stable tag: 0.3.0
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,7 +30,7 @@ For either SEO API, install and activate Rank Math, enable its Headless CMS Supp
 
 The current version supports published posts, pages and selected public custom post types. Archive pages, sitemaps, redirects, 404 reporting and automatic Next.js cache updates are not included. See the validation guide for tested versions and remaining checks.
 
-IndexNow needs a current verification key file on the public website. A submission does not guarantee indexing. CMS noindex does not add a login or prevent access. Leave email suppression off if WordPress must send password resets or notices.
+IndexNow needs a current verification key file on the public website. Keep an existing .txt filename with the optional public key path setting. A public read-only key endpoint is available only while the IndexNow adapter is enabled. A submission does not guarantee indexing. CMS noindex does not add a login or prevent access. Leave email suppression off if WordPress must send password resets or notices.
 
 This project is open source under GPL-3.0-or-later. Thank you to the Rank Math team and contributors for Rank Math SEO and its headless support, which make this bridge possible. This is an independent community project; these credits do not claim Rank Math's approval or support. Rank Math's code is not bundled here.
 
@@ -65,6 +65,8 @@ This bridge does not send post bodies, passwords or visitor details to IndexNow.
 IndexNow's website privacy section describes its website, not every participating search engine's data handling. Check the policies of the search engines and hosting services you choose.
 
 = SEO APIs =
+
+The optional IndexNow key endpoint returns only the current public verification key. It does not generate a key, expose other settings or contact an external service. It remains separate from the REST SEO feature.
 
 The bridge generates SEO inside your WordPress site. Its REST route and optional WPGraphQL field let your frontend request SEO for eligible public content. They do not contact a bridge vendor service. Your Next.js app and hosting provider handle those requests according to your own setup. The bridge does not add analytics or collect usage reports.
 
@@ -109,6 +111,10 @@ First compare their behavior on staging. Keep backups and replace one job at a t
 Version 0.2.1 uses the folder readyspace-headless-seo-bridge-for-rank-math. Older ZIPs used rank-math-headless-bridge or headless-bridge-for-rank-math. Back up your settings and old files, deactivate the old bridge and follow the [folder-change guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md#upgrading-an-older-bridge-zip). Never activate both copies. Deactivation keeps settings. Deleting a bridge version with an uninstaller through WordPress removes their shared bridge settings, so remove only the old code folder after backing up.
 
 == Changelog ==
+
+= 0.3.0 =
+
+Preserve an existing IndexNow key-file path, read the current public verification key, and validate automatic and manual Rank Math payloads with one shared policy. Configure source aliases, private frontend paths and trailing slashes without changing the SEO APIs. Reject entire invalid batches and protect known private, password-protected, nonindexable or externally canonicalized posts. No key rotation or history reset.
 
 = 0.2.1 =
 

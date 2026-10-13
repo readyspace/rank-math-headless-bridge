@@ -8,7 +8,7 @@ Clone the full [GitHub repository](https://github.com/readyspace/rank-math-headl
 before running the development commands below. The installable ZIP contains runtime
 files; guides, frontend examples, tests and development dependencies stay on GitHub.
 
-Run `php tests/run.php`, `php tests/metadata-test.php` (DOM required), and
+Run `php tests/run.php`, `php tests/metadata-test.php` (DOM required), `php tests/indexnow-test.php`, and
 `node --test tests/frontend-example.test.mjs` before proposing a change.
 Build an installable ZIP with `python3 scripts/package.py`.
 
@@ -18,7 +18,7 @@ creates a disposable Playground installation with real upstream plugins; it need
 network access on the first run. Set `BRIDGE_TEST_WP` and `BRIDGE_TEST_PHP` to
 choose versions. `BRIDGE_TEST_DEPENDENCIES` can point at a local directory
 containing extracted `seo-by-rank-math` and `wp-graphql` plugin folders.
-After packaging, set `BRIDGE_TEST_PACKAGE=dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip`
+After packaging, set `BRIDGE_TEST_PACKAGE=dist/readyspace-headless-seo-bridge-for-rank-math-0.3.0.zip`
 to install and test the ZIP instead of mounting the source as the active plugin.
 Run `npm run check:plugin` for the official Plugin Check static checks against that
 ZIP. The check uses a disposable WordPress site and installs the official checker;

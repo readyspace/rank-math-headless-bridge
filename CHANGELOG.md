@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — IndexNow migration contracts
+
+- Keep existing public key filenames with a configurable path; preserve the native CMS key-serving context, current key, module settings and history.
+- Add a read-only current-key REST route when IndexNow is enabled, independent of the REST SEO feature.
+- Apply the same public URL and payload policy to automatic events and Rank Math's manual REST console, which bypasses its URL filter in version 1.0.280.
+- Reject entire invalid batches and known private, password-protected, disallowed, nonindexable or externally canonicalized content.
+- Add explicit historical source origins, excluded frontend paths and IndexNow trailing-slash choices. Existing installations keep key-named files, exact configured origins and original paths by default.
+- Keep the v1 WPGraphQL and REST SEO shapes unchanged; do not add site-specific aliases or settings.
+- Replace filename-based helper warnings with guidance to assign each enabled responsibility to one plugin.
+
 ## 0.2.1 — First WordPress.org release (2026-10-13)
 
 - Publish the approved plugin on WordPress.org: [plugin page](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/) and [version 0.2.1 download](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.2.1.zip).

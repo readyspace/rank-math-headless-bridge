@@ -56,6 +56,27 @@ foreach ( array( 'https://user:password@example.com', 'https://example.com/path'
 $config = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com/', 'indexnow' => '1', 'metadata' => '1', 'public_post_types' => array( 'post', 'page', 'attachment', 'revision', 'private_type', 'post' ) ) );
 expect( $config['public_post_types'], array( 'post', 'page' ), 'Public post types only; no media/revisions' );
 expect( $config['indexnow'], true, 'Explicit valid module selection' );
+expect( $config['indexnow_key_path'], '', 'Existing key-named file remains the default' );
+expect( $config['indexnow_trailing_slash'], 'preserve', 'Existing IndexNow URL paths remain the default' );
+$indexnow_config = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'indexnow_key_path' => '/indexnow.txt', 'indexnow_source_origins' => "http://cms.example.com\nhttps://old.example.com/", 'indexnow_excluded_paths' => "/preview\n/api/\n/thank-you", 'indexnow_trailing_slash' => 'add' ) );
+expect( $indexnow_config['indexnow_key_path'], '/indexnow.txt', 'An existing public key-file path can be preserved' );
+expect( $indexnow_config['indexnow_source_origins'], array( 'http://cms.example.com', 'https://old.example.com' ), 'Explicit source aliases normalize without allowing arbitrary origins' );
+expect( $indexnow_config['indexnow_excluded_paths'], array( '/preview', '/api', '/thank-you' ), 'Private frontend paths accept one value per line' );
+expect( $indexnow_config['indexnow_trailing_slash'], 'add', 'IndexNow path policy is explicit' );
+foreach ( array( '/a/../indexnow.txt', '/%69ndexnow.txt', '/wp-admin/indexnow.txt', '/indexnow.txt?token=x', '//foreign.example/key.txt', '/key.txt\\secret', '/not-a-key.json', '/key.txt ', '/<key>.txt' ) as $bad ) {
+    $invalid = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'indexnow_key_path' => $bad ) );
+    expect( $invalid['indexnow'], false, 'An invalid key path disables IndexNow rather than falling back to another file' );
+}
+$invalid = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'indexnow_excluded_paths' => '/preview?token=x' ) );
+expect( $invalid['indexnow'], false, 'Invalid private paths fail closed during configuration' );
+$invalid = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'indexnow_source_origins' => 'https://user:password@old.example.com' ) );
+expect( $invalid['indexnow'], false, 'Invalid aliases fail closed during configuration' );
+foreach ( array( 'indexnow_source_origins' => array( array( 'https://old.example.com' ) ), 'indexnow_excluded_paths' => array( array( '/preview' ) ), 'indexnow_trailing_slash' => 'unknown' ) as $name => $value ) {
+    $invalid = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', $name => $value ) );
+    expect( $invalid['indexnow'], false, 'Malformed IndexNow policy values fail closed' );
+}
+$invalid = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'indexnow_excluded_paths' => 7 ) );
+expect( $invalid['indexnow'], false, 'A non-text private-path list fails closed' );
 $GLOBALS['options'][ Settings::OPTION ] = $config;
 expect( UrlMapper::to_frontend( 'https://cms.example.com/article/' ), 'https://www.example.com/article/', 'CMS to frontend' );
 expect( UrlMapper::to_frontend( 'https://www.example.com/article/' ), 'https://www.example.com/article/', 'Frontend already mapped' );

@@ -7,7 +7,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const packageFile = resolve(root, process.env.BRIDGE_TEST_PACKAGE || 'dist/readyspace-headless-seo-bridge-for-rank-math-0.2.1.zip');
+const pluginVersion = (await readFile(resolve(root, 'rank-math-headless-bridge.php'), 'utf8')).match(/^ \* Version: ([0-9A-Za-z.+-]+)$/m)?.[1];
+if (!pluginVersion) throw new Error('Missing plugin version header.');
+const packageFile = resolve(root, process.env.BRIDGE_TEST_PACKAGE || `dist/readyspace-headless-seo-bridge-for-rank-math-${pluginVersion}.zip`);
 const packageSha256 = createHash('sha256').update(await readFile(packageFile)).digest('hex');
 const checker = process.env.BRIDGE_PLUGIN_CHECK_DIR;
 const mount = [{ hostPath: dirname(packageFile), vfsPath: '/bridge-package' }];

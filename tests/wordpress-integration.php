@@ -4,6 +4,7 @@ require_once '/wordpress/wp-load.php';
 
 use HeadlessBridge\Metadata;
 use HeadlessBridge\Settings;
+use HeadlessBridge\RankMath;
 
 $checks = 0;
 function bridge_assert( $condition, $message ) {
@@ -108,6 +109,63 @@ $request->set_param( 'post_id', $ids['alpha'] );
 bridge_assert( is_wp_error( Metadata::get_head( $request ) ), 'Disabled REST transport must stay disabled.' );
 $result = graphql( [ 'query' => sprintf( '{ post(id: "%d", idType: DATABASE_ID) { headlessSeo { title } } }', $ids['alpha'] ) ] );
 bridge_assert( empty( $result['errors'] ) && 'Alpha custom SEO title' === $result['data']['post']['headlessSeo']['title'], 'GraphQL incorrectly depends on REST module.' );
+
+// Real native IndexNow adapter, including the manual Api::submit bypass. Every
+// outbound request is intercepted; this disposable fixture sends no network traffic.
+bridge_assert( RankMath::indexnow_ready(), 'Native Instant Indexing module must be enabled in the fixture.' );
+$native_indexnow_options = get_option( 'rank-math-options-instant-indexing' );
+$native_indexnow_log = get_option( 'rank_math_indexnow_log' );
+$native_api = \RankMath\Instant_Indexing\Api::get();
+bridge_assert( 'bridge-fixture-key-12345678' === $native_api->get_key(), 'Bridge must preserve the current native IndexNow key.' );
+bridge_assert( trailingslashit( home_url() ) . $native_api->get_key() . '.txt' === $native_api->get_key_location( 'serve_api_key' ), 'Bridge changed native CMS key-serving context.' );
+bridge_assert( 'https://www.example.com/indexnow.txt' === $native_api->get_key_location( 'request_payload' ), 'Native request payload must use configured public key location.' );
+bridge_assert( 'www.example.com' === $native_api->get_host(), 'Native API must use exact configured public host.' );
+$key_request = new WP_REST_Request( 'GET', '/headless-bridge/v1/indexnow-key' );
+$key_response = rest_do_request( $key_request );
+bridge_assert( 200 === $key_response->get_status() && [ 'key' => $native_api->get_key() ] === $key_response->get_data(), 'Official key route failed with REST SEO disabled.' );
+bridge_assert( false !== strpos( $key_response->get_headers()['Cache-Control'] ?? '', 'no-store' ), 'Public key JSON may not be cached.' );
+foreach ( [ 'indexnow_host', 'indexnow_key_location', 'submit_url', 'publish_url' ] as $hook ) {
+	$owners = [];
+	foreach ( $GLOBALS['wp_filter'][ 'rank_math/instant_indexing/' . $hook ]->callbacks ?? [] as $callbacks ) {
+		foreach ( $callbacks as $entry ) {
+			if ( is_array( $entry['function'] ) && RankMath::class === $entry['function'][0] ) { $owners[] = $entry['function'][1]; }
+		}
+	}
+	bridge_assert( 1 === count( $owners ), 'IndexNow must have one bridge owner for ' . $hook . '.' );
+}
+$native_alpha_url = get_permalink( $ids['alpha'] );
+$public_alpha_url = 'https://www.example.com/bridge-alpha/';
+bridge_assert( $public_alpha_url === RankMath::submission_urls( $native_alpha_url ), 'Actual CMS post did not map to its canonical public URL.' );
+bridge_assert( false === RankMath::submission_urls( get_permalink( $ids['beta'] ) ), 'Native per-post noindex must prevent notifications.' );
+foreach ( [ $private, $draft, $password ] as $id ) { bridge_assert( false === RankMath::publish_url( get_permalink( $id ), get_post( $id ) ), 'Native private/protected post became eligible.' ); }
+update_post_meta( $ids['alpha'], 'rank_math_canonical_url', 'https://foreign.example/source/' );
+bridge_assert( false === RankMath::submission_urls( $native_alpha_url ), 'External canonical must prevent IndexNow notification.' );
+delete_post_meta( $ids['alpha'], 'rank_math_canonical_url' );
+bridge_assert( $native_indexnow_options === get_option( 'rank-math-options-instant-indexing' ) && $native_indexnow_log === get_option( 'rank_math_indexnow_log' ), 'Read-only key/mapping checks changed native settings or history.' );
+$intercepted = [];
+$submit_filter_calls = 0;
+$submit_observer = static function ( $urls ) use ( &$submit_filter_calls ) { ++$submit_filter_calls; return $urls; };
+$interceptor = static function ( $preempt, $args, $url ) use ( &$intercepted ) {
+	if ( false !== $preempt ) { return $preempt; }
+	if ( 'https://api.indexnow.org/indexnow/' !== $url ) { return new WP_Error( 'fixture_no_network', 'Unexpected outbound request in integration fixture.' ); }
+	$intercepted[] = json_decode( $args['body'], true );
+	return [ 'response' => [ 'code' => 202, 'message' => 'Accepted fixture' ], 'headers' => [], 'body' => '', 'cookies' => [], 'filename' => null ];
+};
+add_filter( 'rank_math/instant_indexing/submit_url', $submit_observer, 999 );
+add_filter( 'pre_http_request', $interceptor, 100, 3 );
+try {
+	bridge_assert( $native_api->submit( [ $native_alpha_url, 'http://www.example.com/bridge-alpha/' ], true ), 'Native manual API submission did not pass the intercepted public contract.' );
+	bridge_assert( 0 === $submit_filter_calls, 'Fixture must exercise the native direct-API path that bypasses submit_url.' );
+	bridge_assert( 1 === count( $intercepted ) && [ $public_alpha_url ] === $intercepted[0]['urlList'], 'Final manual payload must map and deduplicate URLs before HTTP.' );
+	bridge_assert( 'www.example.com' === $intercepted[0]['host'] && $native_api->get_key() === $intercepted[0]['key'] && 'https://www.example.com/indexnow.txt' === $intercepted[0]['keyLocation'], 'Final native manual payload has incorrect host/key/location.' );
+	bridge_assert( ! $native_api->submit( [ $native_alpha_url, 'https://www.example.com/preview/' ], true ) && 1 === count( $intercepted ), 'Mixed private manual batch must fail before the HTTP interceptor.' );
+	bridge_assert( ! $native_api->submit( [ get_permalink( $ids['beta'] ) ], true ) && 1 === count( $intercepted ), 'Manual native bypass must reject deliberate noindex.' );
+	bridge_assert( $native_indexnow_options === get_option( 'rank-math-options-instant-indexing' ), 'Manual fixture changed the native key or automatic content types.' );
+	bridge_assert( $native_indexnow_log[0] === get_option( 'rank_math_indexnow_log' )[0], 'Native history lost its previous entry.' );
+} finally {
+	remove_filter( 'pre_http_request', $interceptor, 100 );
+	remove_filter( 'rank_math/instant_indexing/submit_url', $submit_observer, 999 );
+}
 
 // An earlier execution must not hide an upstream failure in a later execution.
 $throw = static function () { throw new RuntimeException( 'Private provider diagnostics must stay private.' ); };
