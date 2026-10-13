@@ -37,6 +37,31 @@ Next.js asks for SEO using a public WordPress post ID. Rank Math **Headless CMS
 Support** is still required. Choose one frontend SEO source, even if both APIs
 are enabled. Your firewall must allow the API requests you intend to use.
 
+## IndexNow migration settings
+
+Enable **IndexNow frontend adapter** only after configuring Rank Math's Instant
+Indexing module and deploying the frontend key file. The REST SEO feature can
+remain off. See the [IndexNow guide](indexnow.md).
+
+- **IndexNow public key path:** leave empty for `/<CURRENT_KEY>.txt`, or preserve
+  an existing path such as `/indexnow.txt`. Use a public `.txt` path on the configured
+  frontend. The bridge does not upload the file or change Rank Math's key.
+- **Additional IndexNow source origins:** explicitly list historical origins,
+  one per line. They are accepted only for IndexNow input, then mapped to the exact
+  configured public origin. An alias on the CMS hostname retains the CMS base path.
+  Other aliases use public frontend paths. Empty means only the current CMS and frontend.
+- **Excluded IndexNow paths:** list private frontend routes such as `/preview`,
+  `/api` or `/thank-you`. Each path and its descendants are rejected, including
+  encoded spellings. The key file and WordPress backend/media paths are always excluded.
+- **IndexNow trailing slashes:** preserve paths by default, or match a frontend
+  that consistently adds or removes them. This setting does not change SEO canonicals.
+
+A malformed path or source alias disables IndexNow when settings are saved. The
+bridge rejects a complete batch if any URL fails policy. For known WordPress posts,
+it also checks selected public types, status, password, Rank Math indexability and
+explicit external canonicals. Public frontend routes with no corresponding CMS post
+remain eligible unless excluded; the bridge cannot infer those routes' access rules.
+
 ## CMS search instructions
 
 **Keep the CMS out of search results** adds `noindex` to CMS responses. It does

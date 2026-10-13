@@ -13,6 +13,10 @@ final class Settings {
 			'metadata' => false,
 			'graphql' => false,
 			'indexnow' => false,
+			'indexnow_key_path' => '',
+			'indexnow_source_origins' => array(),
+			'indexnow_excluded_paths' => array(),
+			'indexnow_trailing_slash' => 'preserve',
 			'editor_links' => false,
 			'cms_noindex' => false,
 			'suppress_mail' => false,
@@ -48,6 +52,31 @@ final class Settings {
 		return UrlMapper::origin( $value );
 	}
 
+	/** A local public path, never a URL, query, credential or encoded traversal. */
+	public static function clean_indexnow_path( $value, bool $key_file = false ): string {
+		if ( ! is_string( $value ) || strlen( $value ) > 1024 || '/' !== substr( $value, 0, 1 ) ||
+			false !== strpos( $value, '//' ) || false !== strpbrk( $value, '\\%?#' ) || preg_match( '/[\x00-\x20\x7f]/', $value ) ) {
+			return '';
+		}
+		foreach ( explode( '/', $value ) as $part ) {
+			if ( '.' === $part || '..' === $part ) {
+				return '';
+			}
+		}
+		$value = rtrim( $value, '/' );
+		if ( '' === $value || ( $key_file && ( ! preg_match( '/\.txt$/iD', $value ) ||
+			strlen( $value ) !== strspn( $value, '/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-' ) ||
+			! UrlMapper::is_content_url( 'https://example.com' . $value ) ) ) ) {
+			return '';
+		}
+		return $value;
+	}
+
+	/** Accept both checkbox arrays and one-value-per-line configuration fields. */
+	private static function lines( $value ): array {
+		return is_array( $value ) ? $value : ( is_string( $value ) ? preg_split( '/\r?\n/', $value ) : array() );
+	}
+
 	public static function sanitize( $input ): array {
 		$output = self::defaults();
 		if ( ! is_array( $input ) ) {
@@ -80,6 +109,55 @@ final class Settings {
 				add_settings_error( self::OPTION, 'pretty_permalinks', __( 'Pretty WordPress permalinks are required for REST and GraphQL metadata, IndexNow and editor link mapping. Configure them before enabling these modules.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
 			}
 		}
+		$output['indexnow_key_path'] = self::clean_indexnow_path( $input['indexnow_key_path'] ?? '', true );
+		if ( ! empty( $input['indexnow_key_path'] ) && '' === $output['indexnow_key_path'] ) {
+			$output['indexnow'] = false;
+			add_settings_error( self::OPTION, 'invalid_indexnow_key_path', __( 'Enter a public .txt path such as /indexnow.txt, without a hostname, query or encoded characters.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+		}
+		foreach ( array( 'indexnow_source_origins', 'indexnow_excluded_paths' ) as $field ) {
+			if ( isset( $input[ $field ] ) && ! is_array( $input[ $field ] ) && ! is_string( $input[ $field ] ) ) {
+				$output['indexnow'] = false;
+				add_settings_error( self::OPTION, 'invalid_indexnow_policy', __( 'IndexNow source origins and excluded paths must be text lines or a list of text values.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+			}
+		}
+		foreach ( self::lines( $input['indexnow_source_origins'] ?? array() ) as $alias ) {
+			if ( ! is_string( $alias ) ) {
+				$output['indexnow'] = false;
+				add_settings_error( self::OPTION, 'invalid_indexnow_source_origin', __( 'Each IndexNow source alias must be a complete origin without a path, query or credentials.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+				continue;
+			}
+			$alias = trim( $alias );
+			$clean = self::clean_origin( $alias );
+			if ( '' !== $clean ) {
+				$output['indexnow_source_origins'][] = $clean;
+			} elseif ( '' !== $alias ) {
+				$output['indexnow'] = false;
+				add_settings_error( self::OPTION, 'invalid_indexnow_source_origin', __( 'Each IndexNow source alias must be a complete origin without a path, query or credentials.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+			}
+		}
+		$output['indexnow_source_origins'] = array_values( array_unique( $output['indexnow_source_origins'] ) );
+		foreach ( self::lines( $input['indexnow_excluded_paths'] ?? array() ) as $path ) {
+			if ( ! is_string( $path ) ) {
+				$output['indexnow'] = false;
+				add_settings_error( self::OPTION, 'invalid_indexnow_excluded_path', __( 'Each excluded IndexNow path must start with / and contain no query or encoded characters.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+				continue;
+			}
+			$path = trim( $path );
+			$clean = self::clean_indexnow_path( $path );
+			if ( '' !== $clean ) {
+				$output['indexnow_excluded_paths'][] = $clean;
+			} elseif ( '' !== $path ) {
+				$output['indexnow'] = false;
+				add_settings_error( self::OPTION, 'invalid_indexnow_excluded_path', __( 'Each excluded IndexNow path must start with / and contain no query or encoded characters.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+			}
+		}
+		$output['indexnow_excluded_paths'] = array_values( array_unique( $output['indexnow_excluded_paths'] ) );
+		if ( in_array( $input['indexnow_trailing_slash'] ?? '', array( 'preserve', 'add', 'remove' ), true ) ) {
+			$output['indexnow_trailing_slash'] = $input['indexnow_trailing_slash'];
+		} elseif ( isset( $input['indexnow_trailing_slash'] ) ) {
+			$output['indexnow'] = false;
+			add_settings_error( self::OPTION, 'invalid_indexnow_trailing_slash', __( 'Choose whether IndexNow preserves, adds or removes trailing slashes.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
+		}
 		$types = isset( $input['public_post_types'] ) && is_array( $input['public_post_types'] ) ? $input['public_post_types'] : array();
 		$output['public_post_types'] = array();
 		foreach ( $types as $type ) {
@@ -100,22 +178,6 @@ final class Settings {
 		} );
 	}
 
-	public static function legacy_notice(): void {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-		$mu_files = array( 'ultimatesales-indexnow.php', 'cleverspeed-indexnow.php', 'cleverspeed-seo.php', 'cleverspeed-editor-links.php', 'cleverspeed-migration-isolation.php' );
-		$legacy = false;
-		foreach ( $mu_files as $file ) {
-			if ( defined( 'WPMU_PLUGIN_DIR' ) && file_exists( WPMU_PLUGIN_DIR . '/' . $file ) ) {
-				$legacy = true;
-			}
-		}
-		$active = (array) get_option( 'active_plugins', array() );
-		if ( $legacy || in_array( 'ultimatesales-headless-seo/ultimatesales-headless-seo.php', $active, true ) ) {
-			echo '<div class="notice notice-warning"><p>' . esc_html__( 'An older site-specific headless helper is present. Migrate on staging before enabling overlapping bridge modules. Nothing has been removed or disabled automatically.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p></div>';
-		}
-	}
 
 	public static function render(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -124,7 +186,6 @@ final class Settings {
 		$config = self::get();
 		echo '<div class="wrap"><h1>' . esc_html__( 'ReadySpace Headless SEO Bridge for Rank Math', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</h1><p>' . esc_html__( 'Connect a separate public website. Enable only the features that your site needs.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p>';
 		settings_errors( self::OPTION );
-		self::legacy_notice();
 		echo '<form method="post" action="options.php">';
 		settings_fields( 'headless_bridge' );
 		echo '<table class="form-table"><tr><th><label for="hb-origin">' . esc_html__( 'Public website address', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</label></th><td><input type="url" class="regular-text" id="hb-origin" name="' . esc_attr( self::OPTION ) . '[frontend_origin]" value="' . esc_attr( $config['frontend_origin'] ) . '" placeholder="https://www.example.com"><p class="description">' . esc_html__( 'Use the public origin only. Your CMS and media addresses stay unchanged.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p></td></tr>';
@@ -140,6 +201,15 @@ final class Settings {
 		foreach ( $modules as $name => $info ) {
 			echo '<tr><th>' . esc_html( $info[0] ) . '</th><td><label><input type="checkbox" name="' . esc_attr( self::OPTION ) . '[' . esc_attr( $name ) . ']" value="1" ' . checked( ! empty( $config[ $name ] ), true, false ) . '> ' . esc_html__( 'Enable', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</label><p class="description">' . esc_html( $info[1] ) . '</p></td></tr>';
 		}
+		echo '<tr><th><label for="hb-key-path">' . esc_html__( 'IndexNow public key path', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</label></th><td><input type="text" class="regular-text" id="hb-key-path" name="' . esc_attr( self::OPTION ) . '[indexnow_key_path]" value="' . esc_attr( $config['indexnow_key_path'] ) . '" placeholder="/indexnow.txt"><p class="description">' . esc_html__( 'Leave empty to use / followed by the current Rank Math key and .txt. The frontend must serve this file; the bridge does not create it.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p></td></tr>';
+		foreach ( array( 'indexnow_source_origins' => array( __( 'Additional IndexNow source origins', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Optional historical origins, one per line. Only these aliases and the configured CMS and frontend can be mapped. An alias on the CMS hostname uses the CMS base path; other aliases use public frontend paths.', 'readyspace-headless-seo-bridge-for-rank-math' ) ), 'indexnow_excluded_paths' => array( __( 'Excluded IndexNow paths', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'One public path per line, such as /preview. Each path and its descendants are excluded. The key file is always excluded.', 'readyspace-headless-seo-bridge-for-rank-math' ) ) ) as $name => $info ) {
+			echo '<tr><th><label for="hb-' . esc_attr( $name ) . '">' . esc_html( $info[0] ) . '</label></th><td><textarea class="large-text" rows="3" id="hb-' . esc_attr( $name ) . '" name="' . esc_attr( self::OPTION ) . '[' . esc_attr( $name ) . ']">' . esc_textarea( implode( "\n", (array) $config[ $name ] ) ) . '</textarea><p class="description">' . esc_html( $info[1] ) . '</p></td></tr>';
+		}
+		echo '<tr><th><label for="hb-trailing-slash">' . esc_html__( 'IndexNow trailing slashes', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</label></th><td><select id="hb-trailing-slash" name="' . esc_attr( self::OPTION ) . '[indexnow_trailing_slash]">';
+		foreach ( array( 'preserve' => __( 'Preserve existing paths', 'readyspace-headless-seo-bridge-for-rank-math' ), 'add' => __( 'Add a trailing slash', 'readyspace-headless-seo-bridge-for-rank-math' ), 'remove' => __( 'Remove trailing slashes', 'readyspace-headless-seo-bridge-for-rank-math' ) ) as $value => $label ) {
+			echo '<option value="' . esc_attr( $value ) . '" ' . selected( $config['indexnow_trailing_slash'], $value, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select><p class="description">' . esc_html__( 'Match the public website’s canonical paths. This choice affects IndexNow only.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p></td></tr>';
 		echo '<tr><th>' . esc_html__( 'Public content types', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</th><td>';
 		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
 			if ( 'attachment' === $type->name ) {
@@ -155,13 +225,13 @@ final class Settings {
 		echo '<li>' . esc_html( UrlMapper::is_configured() ? __( 'A separate public frontend is configured.', 'readyspace-headless-seo-bridge-for-rank-math' ) : __( 'Configure a separate public frontend before enabling bridge modules.', 'readyspace-headless-seo-bridge-for-rank-math' ) ) . '</li>';
 		echo '<li>' . esc_html( get_option( 'permalink_structure' ) ? __( 'Pretty permalinks are configured.', 'readyspace-headless-seo-bridge-for-rank-math' ) : __( 'This version requires pretty permalinks for content URL mapping.', 'readyspace-headless-seo-bridge-for-rank-math' ) ) . '</li>';
 		echo '<li>' . esc_html__( 'Frontend key-file reachability and rendering are checked separately during deployment; this page does not claim they are working.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</li></ul>';
-		if ( ! empty( $config['indexnow'] ) && class_exists( '\RankMath\Instant_Indexing\Api' ) ) {
-			$key = \RankMath\Instant_Indexing\Api::get()->get_key();
+		if ( ! empty( $config['indexnow'] ) && RankMath::indexnow_ready() ) {
+			$key = RankMath::indexnow_key();
 			if ( is_string( $key ) && preg_match( '/^[a-zA-Z0-9-]{8,128}$/D', $key ) ) {
-				echo '<p>' . esc_html__( 'Public IndexNow key file:', 'readyspace-headless-seo-bridge-for-rank-math' ) . ' <code>' . esc_html( self::frontend_origin() . '/' . $key . '.txt' ) . '</code></p>';
+				echo '<p>' . esc_html__( 'Public IndexNow key file:', 'readyspace-headless-seo-bridge-for-rank-math' ) . ' <code>' . esc_html( RankMath::indexnow_key_location( '', 'settings_field' ) ) . '</code></p>';
 				echo '<p>' . esc_html__( 'The file must contain exactly the current Rank Math key. Rotate the frontend file whenever this key changes.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p>';
 			}
 		}
-		echo '<p>' . esc_html__( 'Test migration on a staging site before replacing existing helpers.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p></div>';
+		echo '<p>' . esc_html__( 'Test migration on a staging site before replacing existing helpers. Enable each responsibility in only one plugin.', 'readyspace-headless-seo-bridge-for-rank-math' ) . '</p></div>';
 	}
 }

@@ -83,6 +83,25 @@ loader that includes it. Keep a working copy to restore; do not delete the only 
 Keep your existing preview tool. A working published View link does not replace
 authenticated draft previews. Also keep any old behavior the bridge does not cover.
 
+### Retiring a site-specific API compatibility helper
+
+Change frontend content and sitemap queries to the bridge's existing
+`ContentNode.headlessSeo` field. Its normalized robots, Open Graph and Twitter
+fields can be adapted in frontend code; keep draft previews with the current
+preview provider. A GraphQL frontend does not need the REST SEO feature enabled.
+
+For IndexNow, preserve the current key and public key-file path in the new settings.
+Move any required historical source aliases, excluded frontend routes and slash
+policy into configuration. A dynamic public key-file route can fetch
+`/wp-json/headless-bridge/v1/indexnow-key` instead of a site-specific key API.
+Do not reset Rank Math's Instant Indexing options or submission history.
+
+Verify these contracts on staging, deploy the frontend, then transfer each mapping
+and payload-guard responsibility to the bridge and deactivate the compatibility
+helper. Keep only one owner per callback. Retain unrelated preview, editor, mail,
+sitemap or access helpers unless their actual functions have separately been
+replaced. Back up helper code outside the web root before removing it.
+
 ## 4. Compare the results
 
 | Area | What should work |

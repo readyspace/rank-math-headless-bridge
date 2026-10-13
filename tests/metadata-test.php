@@ -137,7 +137,8 @@ check( '' === Metadata::normalize_head( '<title>Safe</title><link rel="canonical
 check( 'https://another.example.com/source/' === Metadata::normalize_head( '<link rel="canonical" href="https://another.example.com/source/">' )['canonical'], 'Deliberate external canonicals are preserved.' );
 
 $submitted = RankMath::submission_urls( [ 'https://cms.example.com/wp/story/', 'https://www.example.com/story/', 'https://cms.example.com/wp/story/?preview=true', 'https://other.example.com/story/', 'https://cms.example.com/wp/wp-admin/', 7 ] );
-check( [ 'https://www.example.com/story/' ] === $submitted, 'IndexNow submissions are mapped, deduplicated and filtered.' );
+check( false === $submitted, 'Any invalid IndexNow member cancels the complete batch.' );
+check( [ 'https://www.example.com/story/' ] === RankMath::submission_urls( [ 'https://cms.example.com/wp/story/', 'https://www.example.com/story/' ] ), 'Valid IndexNow submissions are mapped and deduplicated.' );
 check( false === RankMath::submission_urls( [] ), 'An empty IndexNow list cancels submission.' );
 check( 'https://www.example.com/story/' === RankMath::submission_urls( 'https://cms.example.com/wp/story/' ), 'Scalar submission remains scalar.' );
 check( false === RankMath::submission_urls( 'https://cms.example.com/wp/story/?tracking=1' ), 'IndexNow refuses all query URLs.' );
