@@ -1,6 +1,6 @@
 # Contributing
 
-Version **0.2.1** is published on [WordPress.org](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/).
+Version **0.3.0** is published on [WordPress.org](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/).
 Use that page to install the plugin. Use this GitHub repository to work on its
 code, guides and Next.js examples.
 

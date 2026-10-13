@@ -1,4 +1,59 @@
-# Validation for the published 0.2.1 release
+# Validation for the published 0.3.0 release
+
+## Version 0.3.0 — 2026-10-14
+
+**ReadySpace Headless SEO Bridge for Rank Math 0.3.0 is published on
+WordPress.org.** Account `readyspace` committed it in SVN revision **3745065**
+on October 14, 2026 at **07:47:34 SGT**. The directory identifies 0.3.0 as its
+current version. All **13 files** in the
+[public ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.3.0.zip)
+match the tested release manifest and the official SHA-256 and MD5 checksums.
+The release is available in
+[`tags/0.3.0`](https://plugins.svn.wordpress.org/readyspace-headless-seo-bridge-for-rank-math/tags/0.3.0/).
+
+| Archive | SHA-256 |
+| --- | --- |
+| Tested 0.3.0 ZIP | `8ba8eb71d3e35a9fe9723e7337d5560aaf8373190d808729c31a6070a7584d35` |
+| Public WordPress.org 0.3.0 ZIP | `43812e5660eea2c9d7438fcf1e62656072bc41b041492cb762ce79ffd2a3efc2` |
+
+WordPress.org repacked the ZIP; the individual release files are identical.
+The following checks passed for source commit
+`c0d41869aaec53d0649600d0988049d875d04d0a` in
+[PR #4](https://github.com/readyspace/rank-math-headless-bridge/pull/4), with
+[all eight push jobs](https://github.com/readyspace/rank-math-headless-bridge/actions/runs/38481544019)
+and all eight pull-request jobs passing:
+
+- The packaged ZIP installed and activated on WordPress **6.7.10** and
+  **7.1.3**, PHP **8.3.33**, Rank Math **1.0.280** and WPGraphQL **2.23.1**.
+  Each run passed **81 integration**, **84 settings/mapping**, **116 metadata**
+  and **83 IndexNow** assertions, followed by disabled GraphQL, absent
+  WPGraphQL and uninstall checks.
+- Native PHP **7.4**, **8.1**, **8.3** and **8.4** jobs passed syntax checks,
+  the same standalone settings/metadata/IndexNow suites and **seven** additional
+  missing-native IndexNow assertions.
+- **Seven** frontend tests passed. A **Next.js 16.4.0 / React 19.3.0** production
+  build passed TypeScript and generated HTML checks for titles, canonicals,
+  robots, social tags and safe JSON-LD.
+- Official **Plugin Check 2.1.0** ran against the installed package in native
+  CI and returned **“Success: Checks complete. No errors found.”** This run
+  produced no JSON findings report; the saved
+  [plugin-check-report.json](plugin-check-report.json) identifies the historical
+  0.2.1 package and must not be used as evidence for the 0.3.0 ZIP.
+
+IndexNow fixtures verified current-key access, configured key paths, native CMS
+key-serving context, URL aliases, exclusions, slash policy, whole-batch
+rejection and final HTTP validation. Real Rank Math `Api::submit()` calls
+exercised its manual-console bypass with outgoing HTTP intercepted in the
+disposable installation. No external IndexNow submission was made by these
+checks. Key, module settings, automatic content types and existing history were
+checked for preservation.
+
+The v1 GraphQL and REST SEO contracts remain unchanged. Package checks do not
+certify every live migration, external IndexNow delivery or frontend key-file
+reachability. Full provider integration remains tested on PHP 8.3; standalone
+PHP 7.4 checks do not establish real-provider PHP 7.4 support. Test your own
+route mappings, previews, safeguards and deployed frontend before enabling or
+replacing helpers. The records below describe earlier releases.
 
 ## Publication checks — 2026-10-13
 

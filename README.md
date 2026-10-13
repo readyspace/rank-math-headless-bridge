@@ -13,10 +13,10 @@ one request. WPGraphQL is optional for the WordPress plugin. Developers who use
 REST can choose the [REST alternative](docs/metadata.md). Nothing switches APIs
 automatically, and every bridge feature starts turned off.
 
-**Version: 0.2.1. Available on WordPress.org.**
+**Version: 0.3.0. Available on WordPress.org.**
 
 - [View the plugin page](https://wordpress.org/plugins/readyspace-headless-seo-bridge-for-rank-math/)
-- [Download version 0.2.1 ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.2.1.zip)
+- [Download version 0.3.0 ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.3.0.zip)
 
 Test on a copy of your site first and read
 [what has been tested](docs/validation.md) before changing a live site.
