@@ -1,10 +1,19 @@
 # Validation
 
-## Version 0.4.0 candidate — 2026-10-14
+## Version 0.4.0 — 2026-10-14
 
-The 0.4.0 package is prepared for publication; it has not yet been published or
-installed on the live CleverSpeed CMS. The live MU helpers remain until the
-published package, settings and replacement ownership pass deployment checks.
+**ReadySpace Headless SEO Bridge for Rank Math 0.4.0 is published on
+WordPress.org.** Account `readyspace` committed it in SVN revision **3745124**.
+The directory identifies 0.4.0 as its current version. All **13 files** in the
+[public ZIP](https://downloads.wordpress.org/plugin/readyspace-headless-seo-bridge-for-rank-math.0.4.0.zip)
+are byte-identical to the tested release from merge commit
+`3fff39bc7bf39a2fa4df3685b043eff885021cb5` and match the official SHA-256 and MD5
+checksums. The release is available in
+[`tags/0.4.0`](https://plugins.svn.wordpress.org/readyspace-headless-seo-bridge-for-rank-math/tags/0.4.0/).
+
+The public ZIP's SHA-256 is
+`086b72ca75671279f73728ce811bd44f5f29593894bebfbfe327d91eb56ab9a6`.
+GitHub documentation updates do not change these published runtime files.
 
 The exact packaged runtime passed disposable WordPress **6.7.10** and **7.1.3**
 integration on PHP **8.3.33**, using Rank Math **1.0.280** and WPGraphQL **2.23.1**.
@@ -15,12 +24,17 @@ IndexNow key/history survived activation. Fresh requests verified explicit
 helper opt-in, provider ownership, public REST/GraphQL stability and opt-out.
 Mail checks used filters without SMTP, and all test posts were disposable fixtures.
 
-The settings and focused editor suites also passed PHP 7.4, 8.1, 8.3 and 8.4.
-Frontend example unit tests passed. CI also runs native PHP, WordPress.org Plugin
-Check and the existing Next.js production fixture before release acceptance.
+All **16 push and pull-request CI jobs** for
+[PR #6](https://github.com/readyspace/rank-math-headless-bridge/pull/6) passed,
+including native PHP **7.4**, **8.1**, **8.3** and **8.4** regression checks,
+WordPress.org Plugin Check and the Next.js production fixture. **11 frontend
+tests** passed, including four tests that execute the actual Gutenberg preview
+script with provider routing, fresh nonce/autosave parameters, trusted origins,
+dynamic mutations and idempotence checks.
 
-Live acceptance must compare authenticated Faust preview routing, Gutenberg
-links, CMS mail/core-sitemap filter ownership, existing frontend SEO/media,
+Package checks do not certify every deployment. Perform site-specific,
+read-only acceptance checks for authenticated preview routing, Gutenberg links,
+CMS mail/core-sitemap filter ownership, existing frontend SEO/media,
 IndexNow key/history and the public key file. No live test posts, messages or
 IndexNow submissions are required. This adds preview destination handling;
 Faust or another provider still owns preview authentication and draft access.
