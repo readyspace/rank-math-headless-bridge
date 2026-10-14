@@ -13,6 +13,13 @@ final class Safeguards {
 		if ( Settings::enabled( 'suppress_mail' ) ) {
 			add_filter( 'pre_wp_mail', array( __CLASS__, 'mail' ), 100, 2 );
 		}
+		if ( Settings::enabled( 'cms_sitemaps' ) && UrlMapper::is_configured() ) {
+			add_filter( 'wp_sitemaps_enabled', array( __CLASS__, 'suppress_core_sitemaps' ), PHP_INT_MAX );
+		}
+	}
+
+	public static function suppress_core_sitemaps( bool $enabled ): bool {
+		return false;
 	}
 
 	public static function robots( array $robots ): array {

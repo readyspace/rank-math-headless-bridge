@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 — Editor and CMS helper replacement
+
+- Extend published editor View links to authenticated REST edit responses with per-post edit permissions; leave anonymous content URLs unchanged.
+- Add opt-in frontend preview destinations and Gutenberg link repair while retaining the existing authenticated preview provider and its parameters.
+- Add opt-in WordPress core CMS sitemap suppression, separate from CMS noindex and Rank Math sitemap settings.
+- Preserve existing settings, GraphQL and REST SEO contracts, IndexNow key and history. New options default off; the existing mail suppression option remains independent.
+
 ## 0.3.0 — IndexNow migration contracts
 
 - Keep existing public key filenames with a configurable path; preserve the native CMS key-serving context, current key, module settings and history.

@@ -3,7 +3,7 @@
  * Plugin Name: ReadySpace Headless SEO Bridge for Rank Math
  * Plugin URI: https://github.com/readyspace/rank-math-headless-bridge
  * Description: Configurable SEO, IndexNow, editor links and optional CMS safeguards for a separate headless frontend.
- * Version: 0.3.0
+ * Version: 0.4.0
  * Requires at least: 6.7
  * Requires PHP: 7.4
  * Author: ReadySpace contributors
@@ -17,7 +17,7 @@ namespace HeadlessBridge;
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'HEADLESS_BRIDGE_VERSION', '0.3.0' );
+define( 'HEADLESS_BRIDGE_VERSION', '0.4.0' );
 define( 'HEADLESS_BRIDGE_FILE', __FILE__ );
 
 foreach ( array( 'settings', 'url-mapper', 'rank-math', 'metadata', 'graphql', 'editor-links', 'safeguards' ) as $headless_bridge_component ) {

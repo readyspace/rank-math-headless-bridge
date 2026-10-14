@@ -106,7 +106,9 @@ Open **Settings → ReadySpace SEO Bridge** in WordPress. All features start off
 | Correct Rank Math schema addresses | Uses public page addresses in supported SEO data. Keeps image addresses where they belong. |
 | IndexNow frontend adapter | Helps Rank Math notify supported search engines about your public website's changed pages. |
 | Public View links in the editor | Opens eligible published pages on your public website. |
+| Frontend preview links | Keeps existing authenticated preview-provider destinations on the frontend, including Gutenberg links. |
 | Keep the CMS out of search results | Adds `noindex` instructions to CMS pages. It does not add a login or block access. |
+| Disable WordPress core sitemaps on the CMS | Stops core CMS sitemaps while leaving Rank Math and frontend sitemap settings unchanged. |
 | Suppress WordPress email | Stops WordPress emails, including password resets. Leave this off if you need those emails. |
 
 For the main setup, enable **SEO through WPGraphQL** and **Correct Rank Math
@@ -117,9 +119,11 @@ bridge's SEO field.
 ## Current limits
 
 This release handles published posts, pages and supported custom content types.
-It does not yet cover every Rank Math feature. Category/archive SEO, sitemaps,
+It does not yet cover every Rank Math feature. Category/archive SEO, sitemap generation,
 redirects, 404 reporting and automatic frontend cache updates are future work.
-Authenticated draft previews stay with your existing preview tool.
+Authenticated draft previews stay with your existing preview tool. Version 0.4.0
+adds optional preview destination handling and core CMS sitemap suppression;
+enable these only when replacing equivalent helpers.
 
 GraphQL can combine content and SEO in one request. It does not guarantee a faster
 website. We have tested the results, but have not measured GraphQL against REST.

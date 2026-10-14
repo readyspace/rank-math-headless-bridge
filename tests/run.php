@@ -6,6 +6,7 @@ $cms_origin = 'https://cms.example.com';
 $uploads_base = 'https://cms.example.com/custom-media';
 $errors = array();
 $filters = array();
+$registered_filters = array();
 $admin = true;
 
 function get_option( $key, $default = false ) { return $GLOBALS['options'][ $key ] ?? $default; }
@@ -18,7 +19,9 @@ function is_post_type_viewable( $type ) { return $type && $type->public; }
 function add_settings_error( $setting, $code, $message ) { $GLOBALS['errors'][] = $code; }
 function __( $text, $domain = '' ) { return $text; }
 function apply_filters( $hook, $value, ...$args ) { return isset( $GLOBALS['filters'][ $hook ] ) ? $GLOBALS['filters'][ $hook ]( $value, ...$args ) : $value; }
+function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) { $GLOBALS['registered_filters'][ $hook ][ $priority ][] = array( $callback, $accepted_args ); }
 function is_admin() { return $GLOBALS['admin']; }
+function current_user_can( $capability, ...$args ) { return true; }
 function get_post( $id ) { return $GLOBALS['posts'][ $id ] ?? null; }
 class WP_Post {
 	public $ID = 1;
@@ -46,7 +49,7 @@ function expect( $actual, $expected, $label ) {
 		exit( 1 );
 	}
 }
-foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'cms_noindex', 'suppress_mail' ) as $module ) {
+foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'preview_links', 'cms_noindex', 'cms_sitemaps', 'suppress_mail' ) as $module ) {
 	expect( Settings::enabled( $module ), false, 'No activation side effects: ' . $module );
 }
 expect( Settings::clean_origin( 'https://EXAMPLE.com:443/' ), 'https://example.com', 'Normalize default port and case' );
@@ -58,6 +61,14 @@ expect( $config['public_post_types'], array( 'post', 'page' ), 'Public post type
 expect( $config['indexnow'], true, 'Explicit valid module selection' );
 expect( $config['indexnow_key_path'], '', 'Existing key-named file remains the default' );
 expect( $config['indexnow_trailing_slash'], 'preserve', 'Existing IndexNow URL paths remain the default' );
+expect( $config['preview_links'], false, 'Saving existing settings never opts into provider preview changes' );
+expect( $config['cms_sitemaps'], false, 'Saving existing settings never disables core sitemaps implicitly' );
+$safeguard_config = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'preview_links' => '1', 'cms_sitemaps' => '1', 'suppress_mail' => '1' ) );
+expect( $safeguard_config['preview_links'], true, 'Preview repair requires an explicit opt-in' );
+expect( $safeguard_config['cms_sitemaps'], true, 'Core sitemap suppression requires an explicit opt-in' );
+expect( $safeguard_config['suppress_mail'], true, 'Existing mail suppression remains an independent opt-in' );
+$invalid_origin = Settings::sanitize( array( 'frontend_origin' => 'https://cms.example.com', 'preview_links' => '1', 'cms_sitemaps' => '1' ) );
+expect( $invalid_origin['preview_links'] || $invalid_origin['cms_sitemaps'], false, 'Origin-dependent safeguards require a separate public frontend' );
 $indexnow_config = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'indexnow_key_path' => '/indexnow.txt', 'indexnow_source_origins' => "http://cms.example.com\nhttps://old.example.com/", 'indexnow_excluded_paths' => "/preview\n/api/\n/thank-you", 'indexnow_trailing_slash' => 'add' ) );
 expect( $indexnow_config['indexnow_key_path'], '/indexnow.txt', 'An existing public key-file path can be preserved' );
 expect( $indexnow_config['indexnow_source_origins'], array( 'http://cms.example.com', 'https://old.example.com' ), 'Explicit source aliases normalize without allowing arbitrary origins' );
@@ -125,10 +136,36 @@ HeadlessBridge\Metadata::$active = false;
 expect( Safeguards::headers( array() ), array( 'X-Robots-Tag' => 'noindex, nofollow' ), 'CMS noindex response header' );
 expect( Safeguards::mail( null, array() ), false, 'Suppressed mail reports no delivery' );
 expect( Safeguards::mail( true, array() ), true, 'Respect existing mail provider result' );
+expect( Safeguards::mail( false, array() ), false, 'Respect an earlier mail provider failure' );
 $GLOBALS['filters']['headless_bridge/allow_cms_mail'] = function () { return true; };
 expect( Safeguards::mail( null, array() ), null, 'Explicit per-call mail opt-in' );
+unset( $GLOBALS['filters']['headless_bridge/allow_cms_mail'] );
+// Registration, not just callback results, is the public opt-in contract. A CMS
+// noindex policy must never silently disable core sitemaps or suppress mail.
+$GLOBALS['options'][ Settings::OPTION ] = $config;
+$GLOBALS['options'][ Settings::OPTION ]['cms_noindex'] = true;
+$GLOBALS['registered_filters'] = array();
+Safeguards::register();
+expect( isset( $GLOBALS['registered_filters']['wp_robots'] ), true, 'CMS noindex registers its existing robots policy' );
+expect( isset( $GLOBALS['registered_filters']['wp_sitemaps_enabled'] ), false, 'CMS noindex alone leaves core sitemap policy untouched' );
+expect( isset( $GLOBALS['registered_filters']['pre_wp_mail'] ), false, 'CMS noindex alone leaves mail delivery untouched' );
+$GLOBALS['options'][ Settings::OPTION ] = $safeguard_config;
+$GLOBALS['registered_filters'] = array();
+Safeguards::register();
+expect( $GLOBALS['registered_filters']['wp_sitemaps_enabled'][ PHP_INT_MAX ], array( array( array( Safeguards::class, 'suppress_core_sitemaps' ), 1 ) ), 'Core sitemap suppression has one final bridge owner' );
+expect( Safeguards::suppress_core_sitemaps( true ), false, 'Opt-in blocks an otherwise enabled core sitemap' );
+expect( Safeguards::suppress_core_sitemaps( false ), false, 'Existing disabled sitemap remains disabled' );
+expect( $GLOBALS['registered_filters']['pre_wp_mail'][100], array( array( array( Safeguards::class, 'mail' ), 2 ) ), 'Mail opt-in uses the existing suppression callback' );
+expect( isset( $GLOBALS['registered_filters']['wp_robots'] ), false, 'Core sitemap and mail choices do not implicitly enable CMS noindex' );
+$GLOBALS['options'][ Settings::OPTION ]['frontend_origin'] = '';
+$GLOBALS['registered_filters'] = array();
+Safeguards::register();
+expect( isset( $GLOBALS['registered_filters']['wp_sitemaps_enabled'] ), false, 'Invalid frontend configuration cannot suppress core sitemaps' );
+expect( isset( $GLOBALS['registered_filters']['pre_wp_mail'] ), true, 'Existing mail suppression does not require URL mapping' );
+$GLOBALS['options'][ Settings::OPTION ] = $config;
 $GLOBALS['options']['permalink_structure'] = '';
-$plain = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'metadata' => '1', 'graphql' => '1', 'editor_links' => '1' ) );
+$plain = Settings::sanitize( array( 'frontend_origin' => 'https://www.example.com', 'indexnow' => '1', 'metadata' => '1', 'graphql' => '1', 'editor_links' => '1', 'preview_links' => '1' ) );
 expect( $plain['metadata'] || $plain['graphql'] || $plain['indexnow'] || $plain['editor_links'], false, 'Unsupported plain permalinks diagnosed and modules disabled' );
+expect( $plain['preview_links'], true, 'Provider query-based previews remain supported independently of public pretty permalinks' );
 expect( in_array( 'pretty_permalinks', $GLOBALS['errors'], true ), true, 'Administrator receives permalink explanation' );
 echo 'PASS: ' . $checks . " mapping/settings/editor/safeguard assertions\n";

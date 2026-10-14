@@ -2,7 +2,7 @@
   "name": "headless-bridge-development",
   "private": true,
   "scripts": {
-    "test": "node --test tests/frontend-example.test.mjs && node --import tsx --test tests/app-router.test.tsx",
+    "test": "node --test tests/frontend-example.test.mjs tests/editor-preview-script.test.mjs && node --import tsx --test tests/app-router.test.tsx",
     "test:wordpress": "node scripts/test-wordpress.mjs",
     "check:plugin": "node scripts/check-wordpress-plugin.mjs",
     "test:next": "next build tests/fixtures/next-app --webpack && node scripts/check-next-html.mjs"
