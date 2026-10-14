@@ -21,6 +21,8 @@ jobs:
         run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
       - name: URL mapping and safeguards
         run: php tests/run.php
+      - name: Authenticated editor, public REST and preview provider contracts
+        run: php tests/editor-links-test.php
       - name: Metadata and IndexNow
         run: php tests/metadata-test.php
       - name: IndexNow public key and complete submission policies

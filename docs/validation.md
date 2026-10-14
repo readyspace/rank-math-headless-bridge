@@ -1,4 +1,29 @@
-# Validation for the published 0.3.0 release
+# Validation
+
+## Version 0.4.0 candidate — 2026-10-14
+
+The 0.4.0 package is prepared for publication; it has not yet been published or
+installed on the live CleverSpeed CMS. The live MU helpers remain until the
+published package, settings and replacement ownership pass deployment checks.
+
+The exact packaged runtime passed disposable WordPress **6.7.10** and **7.1.3**
+integration on PHP **8.3.33**, using Rank Math **1.0.280** and WPGraphQL **2.23.1**.
+Each run passed 104 settings/mapping/safeguard assertions, 66 authenticated
+editor/preview assertions, 116 metadata regressions, 83 IndexNow policies and
+92 real WordPress integration checks. Existing raw settings and the native
+IndexNow key/history survived activation. Fresh requests verified explicit
+helper opt-in, provider ownership, public REST/GraphQL stability and opt-out.
+Mail checks used filters without SMTP, and all test posts were disposable fixtures.
+
+The settings and focused editor suites also passed PHP 7.4, 8.1, 8.3 and 8.4.
+Frontend example unit tests passed. CI also runs native PHP, WordPress.org Plugin
+Check and the existing Next.js production fixture before release acceptance.
+
+Live acceptance must compare authenticated Faust preview routing, Gutenberg
+links, CMS mail/core-sitemap filter ownership, existing frontend SEO/media,
+IndexNow key/history and the public key file. No live test posts, messages or
+IndexNow submissions are required. This adds preview destination handling;
+Faust or another provider still owns preview authentication and draft access.
 
 ## Version 0.3.0 — 2026-10-14
 

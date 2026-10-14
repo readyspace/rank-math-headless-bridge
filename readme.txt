@@ -4,7 +4,7 @@ Tags: headless, seo, graphql, nextjs, indexnow
 Requires at least: 6.7
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -22,13 +22,13 @@ Affiliate disclosure: If you make a qualifying purchase through this link, this 
 
 Our main Next.js setup uses WPGraphQL to ask for content and SEO together. WPGraphQL remains optional for the WordPress plugin. Developers using REST can enable the separate public-post SEO endpoint. The plugin does not switch APIs automatically. All bridge features start off.
 
-Other optional features fix supported SEO page addresses, adapt Rank Math's IndexNow notices, open published View links on the public website, add CMS noindex instructions or stop WordPress email.
+Other optional features fix supported SEO page addresses, adapt Rank Math's IndexNow notices, open published View links on the public website, preserve frontend preview destinations, add CMS noindex instructions, disable WordPress core CMS sitemaps or stop WordPress email.
 
 Test the bridge on a copy of your site before changing a live site. It does not cover every Rank Math feature. The frontend examples must be added to your Next.js app; the plugin does not build or deploy that app.
 
 For either SEO API, install and activate Rank Math, enable its Headless CMS Support and make sure PHP DOM is available. Ask your host about PHP DOM if needed. Drafts, private posts and password-protected posts do not receive public bridge SEO.
 
-The current version supports published posts, pages and selected public custom post types. Archive pages, sitemaps, redirects, 404 reporting and automatic Next.js cache updates are not included. See the validation guide for tested versions and remaining checks.
+The current version supports published posts, pages and selected public custom post types. Archive SEO, sitemap generation, redirects, 404 reporting and automatic Next.js cache updates are not included. An optional CMS safeguard can disable WordPress core sitemaps without changing Rank Math sitemap settings. See the validation guide for tested versions and remaining checks.
 
 IndexNow needs a current verification key file on the public website. Keep an existing .txt filename with the optional public key path setting. A public read-only key endpoint is available only while the IndexNow adapter is enabled. A submission does not guarantee indexing. CMS noindex does not add a login or prevent access. Leave email suppression off if WordPress must send password resets or notices.
 
@@ -106,11 +106,19 @@ The bridge has no paid features, licence keys or required bridge account. Rank M
 
 First compare their behavior on staging. Keep backups and replace one job at a time. Must-use plugins cannot be turned off in the usual Plugins screen. Follow the [migration guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md).
 
+= Does the bridge replace my preview provider? =
+
+No. Optional Frontend preview links preserves the existing provider's preview parameters and repairs Gutenberg preview destinations. You still need an authenticated frontend preview integration, such as Faust. It does not make drafts public or change public SEO and IndexNow mapping.
+
 = How do I upgrade an older bridge ZIP? =
 
 Version 0.2.1 uses the folder readyspace-headless-seo-bridge-for-rank-math. Older ZIPs used rank-math-headless-bridge or headless-bridge-for-rank-math. Back up your settings and old files, deactivate the old bridge and follow the [folder-change guide](https://github.com/readyspace/rank-math-headless-bridge/blob/main/docs/migration.md#upgrading-an-older-bridge-zip). Never activate both copies. Deactivation keeps settings. Deleting a bridge version with an uninstaller through WordPress removes their shared bridge settings, so remove only the old code folder after backing up.
 
 == Changelog ==
+
+= 0.4.0 =
+
+Add opt-in frontend preview links for existing authenticated preview providers, including dynamic Gutenberg links. Extend published editor View links to permission-checked REST edit responses. Add separate opt-in WordPress core CMS sitemap suppression. Preserve existing settings, GraphQL SEO, IndexNow key and history; all new features default off.
 
 = 0.3.0 =
 

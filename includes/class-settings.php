@@ -18,7 +18,9 @@ final class Settings {
 			'indexnow_excluded_paths' => array(),
 			'indexnow_trailing_slash' => 'preserve',
 			'editor_links' => false,
+			'preview_links' => false,
 			'cms_noindex' => false,
+			'cms_sitemaps' => false,
 			'suppress_mail' => false,
 			'public_post_types' => array( 'post', 'page' ),
 		);
@@ -86,11 +88,11 @@ final class Settings {
 		if ( ! empty( $input['frontend_origin'] ) && '' === $output['frontend_origin'] ) {
 			add_settings_error( self::OPTION, 'invalid_origin', __( 'Enter a complete public website origin, such as https://www.example.com, without a path, query or credentials.', 'readyspace-headless-seo-bridge-for-rank-math' ) );
 		}
-		foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'cms_noindex', 'suppress_mail' ) as $module ) {
+		foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'preview_links', 'cms_noindex', 'cms_sitemaps', 'suppress_mail' ) as $module ) {
 			$output[ $module ] = isset( $input[ $module ] ) && in_array( $input[ $module ], array( true, 1, '1' ), true );
 		}
 		if ( '' === $output['frontend_origin'] || $output['frontend_origin'] === UrlMapper::origin( home_url() ) ) {
-			foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'cms_noindex' ) as $module ) {
+			foreach ( array( 'seo', 'metadata', 'graphql', 'indexnow', 'editor_links', 'preview_links', 'cms_noindex', 'cms_sitemaps' ) as $module ) {
 				$output[ $module ] = false;
 			}
 			if ( '' !== $output['frontend_origin'] ) {
@@ -195,7 +197,9 @@ final class Settings {
 			'graphql' => array( __( 'SEO through WPGraphQL', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Add headlessSeo to content queries. Requires WPGraphQL and Rank Math Headless CMS Support; the REST metadata module can stay disabled.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
 			'indexnow' => array( __( 'IndexNow frontend adapter', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Send Rank Math change notifications for the public website. Deploy the verification key file on the frontend before enabling.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
 			'editor_links' => array( __( 'Public View links in the editor', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Open published content on the frontend. Authenticated preview links remain with your current preview provider.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
+			'preview_links' => array( __( 'Frontend preview links', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Move editor preview destinations from the CMS to the public website and keep your preview provider’s parameters. Requires an authenticated frontend preview integration, such as Faust.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
 			'cms_noindex' => array( __( 'Keep the CMS out of search results', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Adds noindex to CMS responses. During public metadata generation, bypasses only the CMS-wide indexing flag and keeps page-level robots choices.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
+			'cms_sitemaps' => array( __( 'Disable WordPress core sitemaps on the CMS', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Stop the CMS from serving WordPress core XML sitemaps. Keep this off if you use them; this does not change Rank Math sitemap settings or your frontend sitemap.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
 			'suppress_mail' => array( __( 'Suppress WordPress email', 'readyspace-headless-seo-bridge-for-rank-math' ), __( 'Blocks all wp_mail delivery, including password resets, form notifications and admin alerts. Leave this off if the CMS needs to send email.', 'readyspace-headless-seo-bridge-for-rank-math' ) ),
 		);
 		foreach ( $modules as $name => $info ) {

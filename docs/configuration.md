@@ -69,15 +69,25 @@ not protect the CMS with a login. While creating frontend SEO, the bridge leaves
 out this CMS-only rule. A deliberate Rank Math `noindex` choice for a post or
 content type still applies. Check both the API data and your Next.js page source.
 
+**Disable WordPress core sitemaps on the CMS** is a separate opt-in safeguard.
+It disables WordPress core XML sitemaps, without changing Rank Math module options
+or your frontend sitemap. Leave it off if you use core CMS sitemaps.
+
 ## Editor links and previews
 
 **Public View links in the editor** changes eligible published View links to
-use the public website. Drafts and authenticated previews stay with your existing
-preview tool. Test both **View** and **Preview** after changing helpers.
+use the public website. It also covers authenticated REST edit responses used by
+Gutenberg, and requires permission to edit the individual post. Anonymous REST and
+GraphQL content URLs stay unchanged. Drafts are not mapped as published links.
 
-Some Gutenberg View links come from REST post responses, which this module does
-not change. Check the link after saving or publishing; your frontend integration
-may need to supply it.
+**Frontend preview links** is a separate opt-in feature for an existing
+authenticated preview integration, such as Faust. It moves eligible CMS preview
+destinations to the configured frontend after the provider adds its parameters.
+It also repairs dynamically generated Gutenberg preview anchors while retaining
+fresh WordPress nonce and autosave parameters. The preview provider continues to
+control authentication and draft access. This option does not create a preview
+endpoint or make drafts publicly available. Keep it off if your provider already
+handles every destination. Test both **View** and **Preview** after changing helpers.
 
 ## WordPress email
 

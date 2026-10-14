@@ -83,6 +83,20 @@ loader that includes it. Keep a working copy to restore; do not delete the only 
 Keep your existing preview tool. A working published View link does not replace
 authenticated draft previews. Also keep any old behavior the bridge does not cover.
 
+### Retiring editor and CMS safeguard helpers
+
+Version 0.4.0 adds separate opt-in **Frontend preview links** and **Disable
+WordPress core sitemaps on the CMS** settings. The existing **Public View links
+in the editor** feature also handles permission-checked REST edit responses.
+Mail suppression remains a separate existing feature. Enable only the functions
+your old helper actually performs. No preview provider, authentication, access
+control, Rank Math module settings or frontend sitemap is replaced by these options.
+
+Compare ordinary View links, Gutenberg links after saving, and existing
+authenticated previews before moving each MU file outside the web root. Check
+mail filter ownership without sending test mail, verify core sitemap suppression,
+and keep only one owner per function. CMS noindex can remain enabled independently.
+
 ### Retiring a site-specific API compatibility helper
 
 Change frontend content and sitemap queries to the bridge's existing

@@ -5,6 +5,8 @@ require_once '/wordpress/wp-load.php';
 use HeadlessBridge\Metadata;
 use HeadlessBridge\Settings;
 use HeadlessBridge\RankMath;
+use HeadlessBridge\Safeguards;
+use HeadlessBridge\EditorLinks;
 
 $checks = 0;
 function bridge_assert( $condition, $message ) {
@@ -18,6 +20,24 @@ bridge_assert( class_exists( 'DOMDocument' ), 'DOM is required.' );
 bridge_assert( function_exists( 'graphql' ) && function_exists( 'rank_math' ), 'Real dependencies must be active.' );
 bridge_assert( \RankMath\Helper::get_settings( 'general.headless_support' ), 'Fixture must enable Rank Math headless support.' );
 bridge_assert( isset( rest_get_server()->get_routes()['/rankmath/v1/getHead'] ), 'Native Rank Math route must be registered.' );
+$native_modules = get_option( 'rank_math_modules' );
+bridge_assert( PHP_INT_MAX === has_filter( 'wp_sitemaps_enabled', [ Safeguards::class, 'suppress_core_sitemaps' ] ), 'Explicit core sitemap suppression must have a final bridge owner.' );
+add_filter( 'wp_sitemaps_enabled', '__return_true', 1 );
+bridge_assert( ! wp_sitemaps_get_server()->sitemaps_enabled(), 'An explicitly enabled core sitemap bypassed CMS suppression.' );
+remove_filter( 'wp_sitemaps_enabled', '__return_true', 1 );
+bridge_assert( $native_modules === get_option( 'rank_math_modules' ), 'Core sitemap suppression changed Rank Math module settings.' );
+bridge_assert( 100 === has_filter( 'pre_wp_mail', [ Safeguards::class, 'mail' ] ), 'Explicit mail suppression must use the existing bridge callback.' );
+bridge_assert( false === apply_filters( 'pre_wp_mail', null, [ 'subject' => 'blocked fixture' ] ), 'Suppressed mail must report no delivery without sending.' );
+$prior_delivery = static function () { return true; };
+add_filter( 'pre_wp_mail', $prior_delivery, 99 );
+bridge_assert( true === apply_filters( 'pre_wp_mail', null, [] ), 'Bridge overwrote a prior mail provider result.' );
+remove_filter( 'pre_wp_mail', $prior_delivery, 99 );
+$mail_exception = static function ( $allowed, $attributes ) { return 'explicit fixture' === ( $attributes['subject'] ?? '' ); };
+add_filter( 'headless_bridge/allow_cms_mail', $mail_exception, 10, 2 );
+bridge_assert( null === apply_filters( 'pre_wp_mail', null, [ 'subject' => 'explicit fixture' ] ), 'Existing explicit per-call mail exception was lost.' );
+bridge_assert( false === apply_filters( 'pre_wp_mail', null, [ 'subject' => 'blocked fixture' ] ), 'Per-call exception incorrectly enabled other mail.' );
+remove_filter( 'headless_bridge/allow_cms_mail', $mail_exception, 10 );
+bridge_assert( 2000 === has_filter( 'preview_post_link', [ EditorLinks::class, 'preview_link' ] ), 'Preview repair must run after an existing preview provider.' );
 register_post_type( 'bridge_book', [ 'public' => true, 'show_in_graphql' => true, 'graphql_single_name' => 'BridgeBook', 'graphql_plural_name' => 'BridgeBooks', 'supports' => [ 'title', 'editor', 'custom-fields' ] ] );
 flush_rewrite_rules( false );
 $ids = [];
@@ -36,6 +56,11 @@ $settings = Settings::get();
 $settings['public_post_types'][] = 'bridge_book';
 update_option( Settings::OPTION, $settings );
 wp_set_current_user( 0 );
+bridge_assert( 'https://cms.example.com/bridge-alpha/' === get_permalink( $ids['alpha'] ), 'Editor mapping changed public CMS permalinks.' );
+$public_content_request = new WP_REST_Request( 'GET', '/wp/v2/posts/' . $ids['alpha'] );
+$public_content_request->set_param( 'context', 'view' );
+$public_content_response = rest_do_request( $public_content_request );
+bridge_assert( 200 === $public_content_response->get_status() && 'https://cms.example.com/bridge-alpha/' === $public_content_response->get_data()['link'], 'Editor helpers changed the public WordPress REST content link.' );
 
 // REST and GraphQL must return the same computed output without request-state leakage.
 $_GET = [ 'p' => $private, 'preview' => 'true' ];
@@ -178,6 +203,9 @@ bridge_assert( ! Metadata::is_frontend_request() && isset( $_GET['preview'] ) &&
 
 $settings['metadata'] = true;
 $settings['graphql'] = false;
+foreach ( [ 'editor_links', 'preview_links', 'cms_sitemaps', 'suppress_mail' ] as $feature ) {
+	$settings[ $feature ] = false;
+}
 update_option( Settings::OPTION, $settings );
 
 echo wp_json_encode( [ 'passed' => $checks, 'wordpress' => $GLOBALS['wp_version'], 'php' => PHP_VERSION, 'rankMath' => rank_math()->version, 'wpgraphql' => WPGRAPHQL_VERSION ] );
